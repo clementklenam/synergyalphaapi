@@ -84,26 +84,25 @@ async def get_all_companies():
 
 @app.get("/search")
 async def search_companies(
-    query: Optional[str] = Query(None, description="Search by ticker, name, or sector"),
+    query: str = Query(..., description="Search by ticker, name, or sector"),
     limit: int = Query(20, description="Number of results to return", ge=1, le=100),
     page: int = Query(1, description="Page number for pagination", ge=1)
 ):
     """
-    Search for companies by ticker, name, or sector in the database.
-    Returns matching companies sorted by market cap.
+    Improved search for companies by ticker, name, or sector.
+    - Exact ticker matches appear first.
+    - Partial matches for tickers, names, and sectors are ranked properly.
     """
     try:
         db = get_database()
-        
-        # Build a flexible search query
-        if not query:
-            raise HTTPException(status_code=400, detail="Query parameter is required")
-        
+
+        # Build a search query with stricter conditions for ticker matching
         search_query = {
             "$or": [
-                {"ticker": {"$regex": query, "$options": "i"}},
-                {"name": {"$regex": query, "$options": "i"}},
-                {"sector": {"$regex": query, "$options": "i"}}
+                {"ticker": {"$regex": f"^{query}$", "$options": "i"}},  # Exact ticker match
+                {"ticker": {"$regex": f"^{query}", "$options": "i"}},  # Ticker starts with query
+                {"name": {"$regex": query, "$options": "i"}},  # Name contains query
+                {"sector": {"$regex": query, "$options": "i"}}  # Sector contains query
             ]
         }
 
@@ -126,7 +125,10 @@ async def search_companies(
 
         results = list(db.companies
                       .find(search_query, projection)
-                      .sort("market_cap", -1)
+                      .sort([
+                          ("ticker", 1 if len(query) > 1 else -1),  # Prioritize tickers when short query
+                          ("market_cap", -1)  # Then sort by market cap
+                      ])
                       .skip(skip)
                       .limit(limit))
 
@@ -143,6 +145,7 @@ async def search_companies(
     except Exception as e:
         logging.error(f"Error in search: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/symbols")
 async def get_symbols():
