@@ -84,22 +84,29 @@ async def get_all_companies():
 
 @app.get("/search")
 async def search_companies(
-    query: Optional[str] = Query(None, description="Search by ticker symbol"),
-    limit: int = Query(20, description="Number of results to return", ge=1, le=100)
+    query: Optional[str] = Query(None, description="Search by ticker, name, or sector"),
+    limit: int = Query(20, description="Number of results to return", ge=1, le=100),
+    page: int = Query(1, description="Page number for pagination", ge=1)
 ):
     """
-    Search for companies by ticker symbol in the database.
+    Search for companies by ticker, name, or sector in the database.
     Returns matching companies sorted by market cap.
     """
     try:
         db = get_database()
         
-        # Build the search query for symbols
-        search_query = {}
-        if query:
-            search_query["ticker"] = {"$regex": query.upper(), "$options": "i"}
+        # Build a flexible search query
+        if not query:
+            raise HTTPException(status_code=400, detail="Query parameter is required")
         
-        # Execute search with projection to return relevant fields
+        search_query = {
+            "$or": [
+                {"ticker": {"$regex": query, "$options": "i"}},
+                {"name": {"$regex": query, "$options": "i"}},
+                {"sector": {"$regex": query, "$options": "i"}}
+            ]
+        }
+
         projection = {
             "_id": 0,
             "ticker": 1,
@@ -113,22 +120,26 @@ async def search_companies(
             "quote.changesPercentage": 1,
             "quote.volume": 1
         }
-        
+
+        # Pagination
+        skip = (page - 1) * limit
+
         results = list(db.companies
                       .find(search_query, projection)
-                      .sort("market_cap", -1)  # Sort by market cap descending
+                      .sort("market_cap", -1)
+                      .skip(skip)
                       .limit(limit))
-        
-        # Add formatted market cap in billions for display
+
         for company in results:
             if company.get("market_cap"):
                 company["market_cap_billions"] = round(company["market_cap"] / 1_000_000_000, 2)
-        
+
         return clean_mongo_data({
             "count": len(results),
+            "page": page,
             "results": results
         })
-        
+
     except Exception as e:
         logging.error(f"Error in search: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
