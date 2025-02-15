@@ -1,0 +1,3 @@
+2025-02-15 04:00:40,757 - ERROR - Error fetching quote for NVDA: 404: Company NVDA not found
+2025-02-15 04:00:55,912 - ERROR - Error fetching quote for TSLA: 404: Company TSLA not found
+2025-02-15 04:11:40,746 - ERROR - Error fetching company SHOP: 404: Company SHOP not found
