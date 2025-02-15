@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException, Query
-from pymongo import MongoClient
-from typing import List, Optional
-from datetime import datetime
-import logging
+from fastapi import FastAPI, HTTPException, Query, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-import json
-import numpy as np
+from typing import List, Optional
+import logging
+import os
+from database import MongoManager, get_database
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from update_manager import UpdateManager
+from utils import clean_mongo_data
 import math
-
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
@@ -18,31 +18,7 @@ logging.basicConfig(
     ]
 )
 
-class CustomJSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, (np.integer, np.floating)):
-            return float(obj)
-        elif isinstance(obj, np.ndarray):
-            return obj.tolist()
-        elif isinstance(obj, datetime):
-            return obj.isoformat()
-        elif math.isnan(float(obj)) if isinstance(obj, (float, int)) else False:
-            return None
-        return super().default(obj)
-
-def clean_mongo_data(data):
-    """Clean data retrieved from MongoDB to handle non-JSON serializable values"""
-    if isinstance(data, dict):
-        return {k: clean_mongo_data(v) for k, v in data.items()}
-    elif isinstance(data, list):
-        return [clean_mongo_data(item) for item in data]
-    elif isinstance(data, (float, np.floating)) and (math.isnan(data) or math.isinf(data)):
-        return None
-    elif isinstance(data, (np.integer, np.floating)):
-        return float(data)
-    elif isinstance(data, datetime):
-        return data.isoformat()
-    return data
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Stock Market Data API", description="API for accessing S&P 500 stock data")
 
@@ -55,66 +31,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MongoDB connection
-MONGODB_URL = "mongodb+srv://admin:Admin123@cluster0.nj0wmq4.mongodb.net/synergy_alpha?retryWrites=true&w=majority"
+ 
 
-def get_database():
-    client = MongoClient(MONGODB_URL)
-    return client["synergy_alpha"]
 
 @app.get("/companies", response_model=List[dict])
-async def get_all_companies():
+async def get_all_companies(db: AsyncIOMotorDatabase = Depends(get_database)):
     """Get basic information for all companies"""
     try:
-        db = get_database()
-        companies = list(db.companies.find({}, {
-            "ticker": 1,
-            "name": 1,
-            "sector": 1,
-            "industry": 1,
-            "market_cap": 1,
-            "exchange": 1,
-            "_id": 0
-        }))
+        companies = await db.companies.find(
+            {},
+            {
+                "ticker": 1,
+                "name": 1,
+                "sector": 1,
+                "industry": 1,
+                "market_cap": 1,
+                "exchange": 1,
+                "_id": 0
+            }
+        ).to_list(length=None)
         return clean_mongo_data(companies)
     except Exception as e:
-        logging.error(f"Error fetching companies: {str(e)}")
+        logger.error(f"Error fetching companies: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/search")
 async def search_companies(
     query: str = Query(..., description="Search by ticker, name, or sector"),
     limit: int = Query(20, description="Number of results to return", ge=1, le=100),
-    page: int = Query(1, description="Page number for pagination", ge=1)
+    page: int = Query(1, description="Page number for pagination", ge=1),
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """
-    Enhanced search for companies with improved ticker matching:
-    - Single letter queries focus exclusively on ticker matches
-    - Exact ticker matches appear first
-    - Prefix matches for tickers are prioritized
-    - Name and sector matches appear after ticker matches
+    Search for companies by ticker symbol in the database.
+    Returns matching companies sorted by market cap.
     """
     try:
-        db = get_database()
-        query = query.upper()  # Convert query to uppercase for better ticker matching
-        
-        # Different search strategies based on query length
-        if len(query) == 1:
-            # For single letter queries, only search tickers starting with that letter
-            search_query = {
-                "ticker": {"$regex": f"^{query}", "$options": "i"}
-            }
-        else:
-            # For longer queries, use a more comprehensive search
-            search_query = {
-                "$or": [
-                    {"ticker": query},  # Exact ticker match
-                    {"ticker": {"$regex": f"^{query}", "$options": "i"}},  # Ticker starts with query
-                    {"name": {"$regex": query, "$options": "i"}},  # Name contains query
-                    {"sector": {"$regex": query, "$options": "i"}}  # Sector contains query
-                ]
-            }
+        # Ensure the query is properly formatted
+        search_query = {}
+        if query:
+            search_query["ticker"] = {"$regex": query.upper(), "$options": "i"}
 
         projection = {
             "_id": 0,
@@ -130,129 +86,116 @@ async def search_companies(
             "quote.volume": 1
         }
 
-        # Pagination
-        skip = (page - 1) * limit
+        # Fetch data from MongoDB
+        cursor = db.companies.find(search_query, projection).sort("market_cap", -1).limit(limit)
+        results = await cursor.to_list(length=limit)  # Ensure to use `await` for async operations
 
-        # Enhanced sorting logic
-        sort_pipeline = [
-            # For exact ticker matches
-            {
-                "$addFields": {
-                    "exactMatch": {
-                        "$cond": [
-                            {"$eq": ["$ticker", query]},
-                            0,
-                            1
-                        ]
-                    },
-                    # For prefix matches
-                    "prefixMatch": {
-                        "$cond": [
-                            {"$regexMatch": {
-                                "input": "$ticker",
-                                "regex": f"^{query}",
-                                "options": "i"
-                            }},
-                            1,
-                            2
-                        ]
-                    }
-                }
-            },
-            # Sort by match type, then by market cap
-            {"$sort": {
-                "exactMatch": 1,
-                "prefixMatch": 1,
-                "market_cap": -1
-            }},
-            {"$skip": skip},
-            {"$limit": limit},
-            # Remove the temporary sorting fields
-            {"$project": projection}
-        ]
-
-        # Execute the aggregation pipeline
-        results = list(db.companies.aggregate([
-            {"$match": search_query},
-            *sort_pipeline
-        ]))
-
-        # Add market cap in billions for easier reading
+        # Format market cap
         for company in results:
             if company.get("market_cap"):
                 company["market_cap_billions"] = round(company["market_cap"] / 1_000_000_000, 2)
 
-        # Get total count for pagination
-        total_count = db.companies.count_documents(search_query)
-
         return clean_mongo_data({
-            "count": total_count,
-            "page": page,
-            "total_pages": math.ceil(total_count / limit),
+            "count": len(results),
             "results": results
         })
 
     except Exception as e:
-        logging.error(f"Error in search: {str(e)}")
+        logger.error(f"Error in search: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+@app.get("/updates/status")
+async def get_update_status():
+    """Get the current status of data updates"""
+    return {
+        "last_update": UpdateManager._last_update,
+        "next_update": (
+            UpdateManager._last_update + timedelta(seconds=settings.UPDATE_INTERVAL)
+            if UpdateManager._last_update
+            else None
+        ),
+        "is_updating": UpdateManager._is_updating
+    }
+
+@app.post("/updates/trigger")
+async def trigger_update(background_tasks: BackgroundTasks):
+    """Manually trigger a data update"""
+    if UpdateManager._is_updating:
+        raise HTTPException(status_code=400, detail="Update already in progress")
+    
+    background_tasks.add_task(UpdateManager.update_stock_data)
+    return {"message": "Update triggered"}
+
 @app.get("/symbols")
-async def get_symbols():
+async def get_symbols(db: AsyncIOMotorDatabase = Depends(get_database)):
     """Get list of all symbols in the database"""
     try:
-        db = get_database()
-        symbols = list(db.companies.find({}, {
-            "_id": 0,
-            "ticker": 1,
-            "name": 1
-        }))
+        symbols = await db.companies.find(
+            {},
+            {
+                "_id": 0,
+                "ticker": 1,
+                "name": 1
+            }
+        ).to_list(length=None)
         return clean_mongo_data(symbols)
     except Exception as e:
-        logging.error(f"Error fetching symbols: {str(e)}")
+        logger.error(f"Error fetching symbols: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.get("/companies/{ticker}")
-async def get_company_details(ticker: str):
+async def get_company_details(
+    ticker: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
     """Get detailed information for a specific company"""
     try:
-        db = get_database()
-        company = db.companies.find_one({"ticker": ticker.upper()}, {"_id": 0})
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {"_id": 0}
+        )
         if not company:
             raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
         return clean_mongo_data(company)
     except Exception as e:
-        logging.error(f"Error fetching company {ticker}: {str(e)}")
+        logger.error(f"Error fetching company {ticker}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/companies/{ticker}/quote")
-async def get_company_quote(ticker: str):
+async def get_company_quote(
+    ticker: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
     """Get current quote for a specific company"""
     try:
-        db = get_database()
-        company = db.companies.find_one({"ticker": ticker.upper()}, {"quote": 1, "_id": 0})
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {"quote": 1, "_id": 0}
+        )
         if not company:
             raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
         return clean_mongo_data(company["quote"])
     except Exception as e:
-        logging.error(f"Error fetching quote for {ticker}: {str(e)}")
+        logger.error(f"Error fetching quote for {ticker}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/companies/{ticker}/prices")
 async def get_stock_prices(
     ticker: str,
     start_date: Optional[str] = Query(None, description="Start date in YYYY-MM-DD format"),
-    end_date: Optional[str] = Query(None, description="End date in YYYY-MM-DD format")
+    end_date: Optional[str] = Query(None, description="End date in YYYY-MM-DD format"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """Get historical stock prices for a specific company"""
     try:
-        db = get_database()
-        company = db.companies.find_one({"ticker": ticker.upper()}, {"stock_prices": 1, "_id": 0})
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {"stock_prices": 1, "_id": 0}
+        )
         if not company:
             raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
         
         prices = company["stock_prices"]
         
-        # Filter by date range if provided
         if start_date:
             prices = [p for p in prices if p["date"] >= start_date]
         if end_date:
@@ -260,64 +203,129 @@ async def get_stock_prices(
             
         return clean_mongo_data(prices)
     except Exception as e:
-        logging.error(f"Error fetching prices for {ticker}: {str(e)}")
+        logger.error(f"Error fetching prices for {ticker}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/companies/{ticker}/financials")
-async def get_financial_statements(ticker: str):
-    """Get financial statements for a specific company"""
-    try:
-        db = get_database()
-        company = db.companies.find_one({"ticker": ticker.upper()}, {"financial_statements": 1, "_id": 0})
-        if not company:
-            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
-        return clean_mongo_data(company["financial_statements"])
-    except Exception as e:
-        logging.error(f"Error fetching financials for {ticker}: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/companies/{ticker}/metrics")
-async def get_key_metrics(ticker: str):
-    """Get key metrics for a specific company"""
-    try:
-        db = get_database()
-        company = db.companies.find_one(
-            {"ticker": ticker.upper()},
-            {"key_metrics": 1, "ttm_ratios": 1, "_id": 0}
-        )
-        if not company:
-            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
-        return clean_mongo_data({
-            "key_metrics": company["key_metrics"],
-            "ttm_ratios": company["ttm_ratios"]
-        })
-    except Exception as e:
-        logging.error(f"Error fetching metrics for {ticker}: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-    
 
 @app.get("/sectors")
-async def get_sectors():
+async def get_sectors(db: AsyncIOMotorDatabase = Depends(get_database)):
     """Get list of all sectors and their companies"""
     try:
-        db = get_database()
         pipeline = [
-            {"$group": {
-                "_id": "$sector",
-                "companies": {"$push": {
-                    "ticker": "$ticker",
-                    "name": "$name",
-                    "market_cap": "$market_cap"
-                }}
-            }}
+            {
+                "$group": {
+                    "_id": "$sector",
+                    "companies": {
+                        "$push": {
+                            "ticker": "$ticker",
+                            "name": "$name",
+                            "market_cap": "$market_cap"
+                        }
+                    }
+                }
+            }
         ]
-        sectors = list(db.companies.aggregate(pipeline))
+        cursor = db.companies.aggregate(pipeline)
+        sectors = await cursor.to_list(length=None)
         return clean_mongo_data(sectors)
     except Exception as e:
-        logging.error(f"Error fetching sectors: {str(e)}")
+        logger.error(f"Error fetching sectors: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
+@app.get("/companies/{ticker}/income-statement")
+async def get_income_statement(
+    ticker: str,
+    period: str = Query("annual", enum=["annual", "quarterly"], description="Choose annual or quarterly data"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Retrieve income statement for a company"""
+    try:
+        # Ensure the ticker is uppercase for consistency
+        ticker = ticker.upper()
 
+        # Fetch only the relevant part of the financial statement
+        company = await db.companies.find_one(
+            {"ticker": ticker},
+            {"financial_statements.income_statement": 1, "_id": 0}
+        )
+
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+
+        # Extract income statement safely
+        income_statement = company.get("financial_statements", {}).get("income_statement", {})
+
+        if period not in income_statement:
+            raise HTTPException(status_code=404, detail=f"Income statement for {ticker} ({period}) not found")
+
+        return clean_mongo_data(income_statement[period])
+
+    except Exception as e:
+        logger.error(f"Error fetching income statement for {ticker}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.get("/companies/{ticker}/balance-sheet")
+async def get_balance_sheet(
+    ticker: str,
+    period: str = Query("annual", enum=["annual", "quarterly"], description="Choose annual or quarterly data"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Retrieve balance sheet for a company"""
+    try:
+        ticker = ticker.upper()
+
+        company = await db.companies.find_one(
+            {"ticker": ticker},
+            {"financial_statements.balance_sheet": 1, "_id": 0}
+        )
+
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+
+        balance_sheet = company.get("financial_statements", {}).get("balance_sheet", {})
+
+        if period not in balance_sheet:
+            raise HTTPException(status_code=404, detail=f"Balance sheet for {ticker} ({period}) not found")
+
+        return clean_mongo_data(balance_sheet[period])
+
+    except Exception as e:
+        logger.error(f"Error fetching balance sheet for {ticker}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@app.get("/companies/{ticker}/cash-flow-statement")
+async def get_cash_flow_statement(
+    ticker: str,
+    period: str = Query("annual", enum=["annual", "quarterly"], description="Choose annual or quarterly data"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Retrieve cash flow statement for a company"""
+    try:
+        ticker = ticker.upper()
+
+        company = await db.companies.find_one(
+            {"ticker": ticker},
+            {"financial_statements.cash_flow_statement": 1, "_id": 0}
+        )
+
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+
+        cash_flow_statement = company.get("financial_statements", {}).get("cash_flow_statement", {})
+
+        if period not in cash_flow_statement:
+            raise HTTPException(status_code=404, detail=f"Cash flow statement for {ticker} ({period}) not found")
+
+        return clean_mongo_data(cash_flow_statement[period])
+
+    except Exception as e:
+        logger.error(f"Error fetching cash flow statement for {ticker}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+    
 import os
+import uvicorn
 
 if __name__ == "__main__":
     import uvicorn

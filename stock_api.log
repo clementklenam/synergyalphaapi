@@ -1,3 +1,1854 @@
 2025-02-15 04:00:40,757 - ERROR - Error fetching quote for NVDA: 404: Company NVDA not found
 2025-02-15 04:00:55,912 - ERROR - Error fetching quote for TSLA: 404: Company TSLA not found
 2025-02-15 04:11:40,746 - ERROR - Error fetching company SHOP: 404: Company SHOP not found
+2025-02-15 16:32:39,451 - INFO - Connected to MongoDB
+2025-02-15 16:32:39,452 - INFO - Automated updates started
+2025-02-15 16:32:39,452 - INFO - API started with automated updates
+2025-02-15 16:32:42,184 - INFO - Starting update for 503 companies
+2025-02-15 16:32:45,536 - ERROR - Error fetching data for MMM: name 'data' is not defined
+2025-02-15 16:32:47,112 - ERROR - Error fetching data for AOS: name 'data' is not defined
+2025-02-15 16:32:48,804 - ERROR - Error fetching data for ABT: name 'data' is not defined
+2025-02-15 16:32:50,430 - ERROR - Error fetching data for ABBV: name 'data' is not defined
+2025-02-15 16:32:52,393 - ERROR - Error fetching data for ACN: name 'data' is not defined
+2025-02-15 16:32:53,944 - ERROR - Error fetching data for ADBE: name 'data' is not defined
+2025-02-15 16:32:55,535 - ERROR - Error fetching data for AMD: name 'data' is not defined
+2025-02-15 16:32:57,079 - ERROR - Error fetching data for AES: name 'data' is not defined
+2025-02-15 16:32:58,659 - ERROR - Error fetching data for AFL: name 'data' is not defined
+2025-02-15 16:33:00,499 - ERROR - Error fetching data for A: name 'data' is not defined
+2025-02-15 16:33:02,099 - ERROR - Error fetching data for APD: name 'data' is not defined
+2025-02-15 16:33:04,019 - ERROR - Error fetching data for ABNB: name 'data' is not defined
+2025-02-15 16:33:05,608 - ERROR - Error fetching data for AKAM: name 'data' is not defined
+2025-02-15 16:33:07,199 - ERROR - Error fetching data for ALB: name 'data' is not defined
+2025-02-15 16:33:09,058 - ERROR - Error fetching data for ARE: name 'data' is not defined
+2025-02-15 16:33:10,632 - ERROR - Error fetching data for ALGN: name 'data' is not defined
+2025-02-15 16:33:12,216 - ERROR - Error fetching data for ALLE: name 'data' is not defined
+2025-02-15 16:33:13,830 - ERROR - Error fetching data for LNT: name 'data' is not defined
+2025-02-15 16:33:15,467 - ERROR - Error fetching data for ALL: name 'data' is not defined
+2025-02-15 16:33:17,044 - ERROR - Error fetching data for GOOGL: name 'data' is not defined
+2025-02-15 16:33:19,058 - ERROR - Error fetching data for GOOG: name 'data' is not defined
+2025-02-15 16:33:21,150 - ERROR - Error fetching data for MO: name 'data' is not defined
+2025-02-15 16:33:22,716 - ERROR - Error fetching data for AMZN: name 'data' is not defined
+2025-02-15 16:33:24,502 - ERROR - Error fetching data for AMCR: name 'data' is not defined
+2025-02-15 16:33:26,191 - ERROR - Error fetching data for AEE: name 'data' is not defined
+2025-02-15 16:33:27,773 - ERROR - Error fetching data for AEP: name 'data' is not defined
+2025-02-15 16:33:29,743 - ERROR - Error fetching data for AXP: name 'data' is not defined
+2025-02-15 16:33:31,324 - ERROR - Error fetching data for AIG: name 'data' is not defined
+2025-02-15 16:33:32,892 - ERROR - Error fetching data for AMT: name 'data' is not defined
+2025-02-15 16:33:34,469 - ERROR - Error fetching data for AWK: name 'data' is not defined
+2025-02-15 16:33:36,667 - ERROR - Error fetching data for AMP: name 'data' is not defined
+2025-02-15 16:33:38,251 - ERROR - Error fetching data for AME: name 'data' is not defined
+2025-02-15 16:33:39,835 - ERROR - Error fetching data for AMGN: name 'data' is not defined
+2025-02-15 16:33:41,411 - ERROR - Error fetching data for APH: name 'data' is not defined
+2025-02-15 16:33:42,963 - ERROR - Error fetching data for ADI: name 'data' is not defined
+2025-02-15 16:33:44,531 - ERROR - Error fetching data for ANSS: name 'data' is not defined
+2025-02-15 16:33:46,183 - ERROR - Error fetching data for AON: name 'data' is not defined
+2025-02-15 16:33:47,815 - ERROR - Error fetching data for APA: name 'data' is not defined
+2025-02-15 16:33:49,382 - ERROR - Error fetching data for APO: name 'data' is not defined
+2025-02-15 16:33:51,003 - ERROR - Error fetching data for AAPL: name 'data' is not defined
+2025-02-15 16:33:52,564 - ERROR - Error fetching data for AMAT: name 'data' is not defined
+2025-02-15 16:33:54,152 - ERROR - Error fetching data for APTV: name 'data' is not defined
+2025-02-15 16:33:55,715 - ERROR - Error fetching data for ACGL: name 'data' is not defined
+2025-02-15 16:33:57,354 - ERROR - Error fetching data for ADM: name 'data' is not defined
+2025-02-15 16:33:58,992 - ERROR - Error fetching data for ANET: name 'data' is not defined
+2025-02-15 16:34:00,568 - ERROR - Error fetching data for AJG: name 'data' is not defined
+2025-02-15 16:34:02,362 - ERROR - Error fetching data for AIZ: name 'data' is not defined
+2025-02-15 16:34:03,920 - ERROR - Error fetching data for T: name 'data' is not defined
+2025-02-15 16:34:05,484 - ERROR - Error fetching data for ATO: name 'data' is not defined
+2025-02-15 16:34:07,063 - ERROR - Error fetching data for ADSK: name 'data' is not defined
+2025-02-15 16:34:08,655 - ERROR - Error fetching data for ADP: name 'data' is not defined
+2025-02-15 16:34:10,223 - ERROR - Error fetching data for AZO: name 'data' is not defined
+2025-02-15 16:34:11,791 - ERROR - Error fetching data for AVB: name 'data' is not defined
+2025-02-15 16:34:13,359 - ERROR - Error fetching data for AVY: name 'data' is not defined
+2025-02-15 16:34:14,975 - ERROR - Error fetching data for AXON: name 'data' is not defined
+2025-02-15 16:35:45,011 - INFO - Connected to MongoDB
+2025-02-15 16:35:45,012 - INFO - Automated updates started
+2025-02-15 16:35:45,012 - INFO - API started with automated updates
+2025-02-15 16:35:47,080 - INFO - Starting update for 503 companies
+2025-02-15 16:35:47,080 - ERROR - Error updating MMM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,080 - ERROR - Error updating AOS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,080 - ERROR - Error updating ABT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,080 - ERROR - Error updating ABBV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,080 - ERROR - Error updating ACN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,080 - ERROR - Error updating ADBE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,080 - ERROR - Error updating AMD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,080 - ERROR - Error updating AES: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating AFL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating A: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating APD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating ABNB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating AKAM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating ALB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating ARE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating ALGN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating ALLE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating LNT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating ALL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating GOOGL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating GOOG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,081 - ERROR - Error updating MO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,082 - ERROR - Error updating AMZN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,082 - ERROR - Error updating AMCR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,082 - ERROR - Error updating AEE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,082 - ERROR - Error updating AEP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,082 - ERROR - Error updating AXP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,082 - ERROR - Error updating AIG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,082 - ERROR - Error updating AMT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating AWK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating AMP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating AME: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating AMGN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating APH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating ADI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating ANSS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating AON: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating APA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating APO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,083 - ERROR - Error updating AAPL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating AMAT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating APTV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating ACGL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating ADM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating ANET: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating AJG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating AIZ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating T: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating ATO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating ADSK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating ADP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating AZO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating AVB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating AVY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating AXON: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,084 - ERROR - Error updating BKR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,086 - ERROR - Error updating BALL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,086 - ERROR - Error updating BAC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,086 - ERROR - Error updating BAX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,086 - ERROR - Error updating BDX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,087 - ERROR - Error updating BRK.B: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,087 - ERROR - Error updating BBY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,087 - ERROR - Error updating TECH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,087 - ERROR - Error updating BIIB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,087 - ERROR - Error updating BLK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,087 - ERROR - Error updating BX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,087 - ERROR - Error updating BK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,088 - ERROR - Error updating BA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,088 - ERROR - Error updating BKNG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,088 - ERROR - Error updating BWA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,088 - ERROR - Error updating BSX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,088 - ERROR - Error updating BMY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,088 - ERROR - Error updating AVGO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,088 - ERROR - Error updating BR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,089 - ERROR - Error updating BRO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,089 - ERROR - Error updating BF.B: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,089 - ERROR - Error updating BLDR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,089 - ERROR - Error updating BG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,089 - ERROR - Error updating BXP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,089 - ERROR - Error updating CHRW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,089 - ERROR - Error updating CDNS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CZR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CPT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CPB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating COF: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CAH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating KMX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CCL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CARR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CAT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,090 - ERROR - Error updating CBOE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CBRE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CDW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating COR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CNC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CNP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CF: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CRL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating SCHW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CHTR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CVX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CMG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,091 - ERROR - Error updating CHD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CINF: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CTAS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CSCO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating C: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CFG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CLX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CME: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CMS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating KO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CTSH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CMCSA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating CAG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating COP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,092 - ERROR - Error updating ED: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,093 - ERROR - Error updating STZ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,093 - ERROR - Error updating CEG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,093 - ERROR - Error updating COO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,093 - ERROR - Error updating CPRT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,093 - ERROR - Error updating GLW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,094 - ERROR - Error updating CPAY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,094 - ERROR - Error updating CTVA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,094 - ERROR - Error updating CSGP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,094 - ERROR - Error updating COST: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,094 - ERROR - Error updating CTRA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,094 - ERROR - Error updating CRWD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating CCI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating CSX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating CMI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating CVS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DHR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DRI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DVA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DAY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DECK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DELL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DAL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DVN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DXCM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating FANG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DLR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DFS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,095 - ERROR - Error updating DG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,096 - ERROR - Error updating DLTR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,096 - ERROR - Error updating D: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,096 - ERROR - Error updating DPZ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,096 - ERROR - Error updating DOV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating DOW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating DHI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating DTE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating DUK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating DD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating EMN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating ETN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating EBAY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating ECL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating EIX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating EW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating EA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating ELV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating EMR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,097 - ERROR - Error updating ENPH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating ETR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EOG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EPAM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EQT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EFX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EQIX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EQR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating ERIE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating ESS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EVRG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating ES: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EXC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EXPE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EXPD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating EXR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating XOM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,098 - ERROR - Error updating FFIV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,099 - ERROR - Error updating FDS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,099 - ERROR - Error updating FICO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,100 - ERROR - Error updating FAST: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,100 - ERROR - Error updating FRT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FDX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FIS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FITB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FSLR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FMC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating F: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FTNT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FTV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,101 - ERROR - Error updating FOXA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating FOX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating BEN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating FCX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GRMN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating IT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GEHC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GEV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GEN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GNRC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GIS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GPC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GILD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,102 - ERROR - Error updating GPN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating GL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating GDDY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating GS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HAL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HIG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HAS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HCA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating DOC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HSIC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HSY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HES: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HPE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HLT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HOLX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,103 - ERROR - Error updating HD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,104 - ERROR - Error updating HON: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,104 - ERROR - Error updating HRL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,104 - ERROR - Error updating HST: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,104 - ERROR - Error updating HWM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,104 - ERROR - Error updating HPQ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,104 - ERROR - Error updating HUBB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,104 - ERROR - Error updating HUM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,105 - ERROR - Error updating HBAN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,105 - ERROR - Error updating HII: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,106 - ERROR - Error updating IBM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,108 - ERROR - Error updating IEX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,108 - ERROR - Error updating IDXX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,108 - ERROR - Error updating ITW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,108 - ERROR - Error updating INCY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating IR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating PODD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating INTC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating ICE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating IFF: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating IP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating IPG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,109 - ERROR - Error updating INTU: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,110 - ERROR - Error updating ISRG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,110 - ERROR - Error updating IVZ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,110 - ERROR - Error updating INVH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,110 - ERROR - Error updating IQV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,110 - ERROR - Error updating IRM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,111 - ERROR - Error updating JBHT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,111 - ERROR - Error updating JBL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,111 - ERROR - Error updating JKHY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,111 - ERROR - Error updating J: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,112 - ERROR - Error updating JNJ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,113 - ERROR - Error updating JCI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating JPM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating JNPR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating K: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KVUE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KDP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KEY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KEYS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KMB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KIM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KMI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KKR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KLAC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KHC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,114 - ERROR - Error updating KR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LHX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LRCX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LVS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LDOS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LEN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LII: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LLY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LIN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LYV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LKQ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LMT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating L: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LOW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LULU: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating LYB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,115 - ERROR - Error updating MTB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MPC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MKTX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MAR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MMC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MLM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MAS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MTCH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MKC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MCD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MCK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MDT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MRK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating META: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MET: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MTD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MGM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MCHP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,116 - ERROR - Error updating MU: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MSFT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MAA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MRNA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MHK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MOH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating TAP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MDLZ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MPWR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MNST: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MCO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MOS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MSI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating MSCI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating NDAQ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating NTAP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating NFLX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating NEM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,117 - ERROR - Error updating NWSA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NWS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NEE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NKE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NDSN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NSC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NTRS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,118 - ERROR - Error updating NOC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,119 - ERROR - Error updating NCLH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,119 - ERROR - Error updating NRG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,119 - ERROR - Error updating NUE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,119 - ERROR - Error updating NVDA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,119 - ERROR - Error updating NVR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,119 - ERROR - Error updating NXPI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,120 - ERROR - Error updating ORLY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,147 - ERROR - Error updating OXY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,147 - ERROR - Error updating ODFL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,148 - ERROR - Error updating OMC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,148 - ERROR - Error updating ON: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,148 - ERROR - Error updating OKE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,149 - ERROR - Error updating ORCL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,149 - ERROR - Error updating OTIS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,149 - ERROR - Error updating PCAR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,149 - ERROR - Error updating PKG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,150 - ERROR - Error updating PLTR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,150 - ERROR - Error updating PANW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,150 - ERROR - Error updating PARA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,150 - ERROR - Error updating PH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,150 - ERROR - Error updating PAYX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,150 - ERROR - Error updating PAYC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,150 - ERROR - Error updating PYPL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,151 - ERROR - Error updating PNR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,151 - ERROR - Error updating PEP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,151 - ERROR - Error updating PFE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,152 - ERROR - Error updating PCG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,152 - ERROR - Error updating PM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,152 - ERROR - Error updating PSX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,152 - ERROR - Error updating PNW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,153 - ERROR - Error updating PNC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,153 - ERROR - Error updating POOL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,153 - ERROR - Error updating PPG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,153 - ERROR - Error updating PPL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,153 - ERROR - Error updating PFG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,153 - ERROR - Error updating PG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,153 - ERROR - Error updating PGR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,154 - ERROR - Error updating PLD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,156 - ERROR - Error updating PRU: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,156 - ERROR - Error updating PEG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,156 - ERROR - Error updating PTC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,156 - ERROR - Error updating PSA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,156 - ERROR - Error updating PHM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,156 - ERROR - Error updating PWR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,157 - ERROR - Error updating QCOM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,157 - ERROR - Error updating DGX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,157 - ERROR - Error updating RL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,157 - ERROR - Error updating RJF: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,157 - ERROR - Error updating RTX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,157 - ERROR - Error updating O: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating REG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating REGN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating RF: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating RSG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating RMD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating RVTY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating ROK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating ROL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating ROP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating ROST: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating RCL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,158 - ERROR - Error updating SPGI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating CRM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SBAC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SLB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating STX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SRE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating NOW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SHW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SPG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SWKS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SJM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SNA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SOLV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating LUV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SWK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating SBUX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,159 - ERROR - Error updating STT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating STLD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating STE: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating SYK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating SMCI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating SYF: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating SNPS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating SYY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating TMUS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating TROW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating TTWO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating TPR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,160 - ERROR - Error updating TRGP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,161 - ERROR - Error updating TGT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,161 - ERROR - Error updating TEL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,162 - ERROR - Error updating TDY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,162 - ERROR - Error updating TFX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,162 - ERROR - Error updating TER: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,162 - ERROR - Error updating TSLA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,162 - ERROR - Error updating TXN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,162 - ERROR - Error updating TPL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,164 - ERROR - Error updating TXT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,164 - ERROR - Error updating TMO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,164 - ERROR - Error updating TJX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,164 - ERROR - Error updating TSCO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating TT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating TDG: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating TRV: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating TRMB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating TFC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating TYL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating TSN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating USB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating UBER: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating UDR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating ULTA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating UNP: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating UAL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating UPS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating URI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating UNH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating UHS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,165 - ERROR - Error updating VLO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VTR: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VLTO: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VRSN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VRSK: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VZ: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VRTX: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VTRS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VICI: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating V: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VST: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating VMC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating WRB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating GWW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating WAB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating WBA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating WMT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating DIS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating WBD: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating WM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,166 - ERROR - Error updating WAT: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WEC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WFC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WELL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WST: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WDC: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WMB: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WTW: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WDAY: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating WYNN: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating XEL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating XYL: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating YUM: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating ZBRA: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating ZBH: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,167 - ERROR - Error updating ZTS: type object 'UpdateManager' has no attribute '_fetch_stock_data'
+2025-02-15 16:35:47,168 - INFO - Stock data update completed
+2025-02-15 16:35:47,192 - INFO - Automated updates stopped
+2025-02-15 16:35:47,199 - INFO - Closed MongoDB connections
+2025-02-15 16:35:47,199 - INFO - API shutting down, stopped updates and closed connections
+2025-02-15 16:37:47,700 - INFO - Connected to MongoDB
+2025-02-15 16:37:47,700 - INFO - Automated updates started
+2025-02-15 16:37:47,700 - INFO - API started with automated updates
+2025-02-15 16:37:49,455 - INFO - Starting update for 503 companies
+2025-02-15 16:37:50,997 - INFO - Automated updates stopped
+2025-02-15 16:37:50,997 - INFO - Closed MongoDB connections
+2025-02-15 16:37:50,997 - INFO - API shutting down, stopped updates and closed connections
+2025-02-15 16:38:37,212 - INFO - Connected to MongoDB
+2025-02-15 16:38:37,212 - INFO - Automated updates started
+2025-02-15 16:38:37,212 - INFO - API started with automated updates
+2025-02-15 16:38:38,740 - INFO - Starting update for 503 companies
+2025-02-15 16:38:43,136 - INFO - Updated MMM
+2025-02-15 16:38:45,293 - INFO - Updated AOS
+2025-02-15 16:38:47,609 - INFO - Updated ABT
+2025-02-15 16:38:49,811 - INFO - Updated ABBV
+2025-02-15 16:38:52,068 - INFO - Updated ACN
+2025-02-15 16:38:53,983 - INFO - Updated ADBE
+2025-02-15 16:38:56,501 - INFO - Updated AMD
+2025-02-15 16:38:58,625 - INFO - Updated AES
+2025-02-15 16:39:00,417 - INFO - Updated AFL
+2025-02-15 16:39:02,611 - INFO - Updated A
+2025-02-15 16:39:04,421 - INFO - Updated APD
+2025-02-15 16:39:06,479 - INFO - Updated ABNB
+2025-02-15 16:39:08,446 - INFO - Updated AKAM
+2025-02-15 16:39:10,257 - INFO - Updated ALB
+2025-02-15 16:39:12,095 - INFO - Updated ARE
+2025-02-15 16:39:13,995 - INFO - Updated ALGN
+2025-02-15 16:39:16,649 - INFO - Updated ALLE
+2025-02-15 16:39:18,453 - INFO - Updated LNT
+2025-02-15 16:39:20,268 - INFO - Updated ALL
+2025-02-15 16:39:22,208 - INFO - Updated GOOGL
+2025-02-15 16:39:24,145 - INFO - Updated GOOG
+2025-02-15 16:39:26,107 - INFO - Updated MO
+2025-02-15 16:39:27,940 - INFO - Updated AMZN
+2025-02-15 16:39:29,766 - INFO - Updated AMCR
+2025-02-15 16:39:31,723 - INFO - Updated AEE
+2025-02-15 16:39:34,264 - INFO - Updated AEP
+2025-02-15 16:39:36,078 - INFO - Updated AXP
+2025-02-15 16:39:37,899 - INFO - Updated AIG
+2025-02-15 16:39:39,762 - INFO - Updated AMT
+2025-02-15 16:39:41,711 - INFO - Updated AWK
+2025-02-15 16:39:43,545 - INFO - Updated AMP
+2025-02-15 16:39:45,749 - INFO - Updated AME
+2025-02-15 16:39:47,541 - INFO - Updated AMGN
+2025-02-15 16:39:49,496 - INFO - Updated APH
+2025-02-15 16:39:51,293 - INFO - Updated ADI
+2025-02-15 16:39:53,089 - INFO - Updated ANSS
+2025-02-15 16:39:54,880 - INFO - Updated AON
+2025-02-15 16:39:56,681 - INFO - Updated APA
+2025-02-15 16:39:58,465 - INFO - Updated APO
+2025-02-15 16:40:00,678 - INFO - Updated AAPL
+2025-02-15 16:40:02,822 - INFO - Updated AMAT
+2025-02-15 16:40:04,932 - INFO - Updated APTV
+2025-02-15 16:40:07,201 - INFO - Updated ACGL
+2025-02-15 16:40:09,267 - INFO - Updated ADM
+2025-02-15 16:40:11,105 - INFO - Updated ANET
+2025-02-15 16:40:13,073 - INFO - Updated AJG
+2025-02-15 16:40:14,874 - INFO - Updated AIZ
+2025-02-15 16:40:17,264 - INFO - Updated T
+2025-02-15 16:40:19,512 - INFO - Updated ATO
+2025-02-15 16:40:21,865 - INFO - Updated ADSK
+2025-02-15 16:40:23,846 - INFO - Updated ADP
+2025-02-15 16:40:25,791 - INFO - Updated AZO
+2025-02-15 16:40:27,596 - INFO - Updated AVB
+2025-02-15 16:40:29,410 - INFO - Updated AVY
+2025-02-15 16:40:31,776 - INFO - Updated AXON
+2025-02-15 16:40:33,806 - INFO - Updated BKR
+2025-02-15 16:40:36,080 - INFO - Updated BALL
+2025-02-15 16:40:37,890 - INFO - Updated BAC
+2025-02-15 16:40:39,802 - INFO - Updated BAX
+2025-02-15 16:40:41,614 - INFO - Updated BDX
+2025-02-15 16:40:43,386 - INFO - Updated BRK.B
+2025-02-15 16:40:45,443 - INFO - Updated BBY
+2025-02-15 16:40:47,250 - INFO - Updated TECH
+2025-02-15 16:40:49,054 - INFO - Updated BIIB
+2025-02-15 16:40:51,504 - INFO - Updated BLK
+2025-02-15 16:40:53,325 - INFO - Updated BX
+2025-02-15 16:40:55,402 - INFO - Updated BK
+2025-02-15 16:40:57,253 - INFO - Updated BA
+2025-02-15 16:40:59,294 - INFO - Updated BKNG
+2025-02-15 16:41:01,651 - INFO - Updated BWA
+2025-02-15 16:41:03,795 - INFO - Updated BSX
+2025-02-15 16:41:06,185 - INFO - Updated BMY
+2025-02-15 16:41:08,190 - INFO - Updated AVGO
+2025-02-15 16:41:10,005 - INFO - Updated BR
+2025-02-15 16:41:12,238 - INFO - Updated BRO
+2025-02-15 16:41:14,078 - INFO - Updated BF.B
+2025-02-15 16:41:16,126 - INFO - Updated BLDR
+2025-02-15 16:41:17,954 - INFO - Updated BG
+2025-02-15 16:41:19,818 - INFO - Updated BXP
+2025-02-15 16:41:22,140 - INFO - Updated CHRW
+2025-02-15 16:41:23,978 - INFO - Updated CDNS
+2025-02-15 16:41:25,844 - INFO - Updated CZR
+2025-02-15 16:41:27,738 - INFO - Updated CPT
+2025-02-15 16:41:29,616 - INFO - Updated CPB
+2025-02-15 16:41:31,414 - INFO - Updated COF
+2025-02-15 16:41:33,178 - INFO - Updated CAH
+2025-02-15 16:41:34,989 - INFO - Updated KMX
+2025-02-15 16:41:36,813 - INFO - Updated CCL
+2025-02-15 16:41:38,595 - INFO - Updated CARR
+2025-02-15 16:41:40,406 - INFO - Updated CAT
+2025-02-15 16:41:42,218 - INFO - Updated CBOE
+2025-02-15 16:41:44,010 - INFO - Updated CBRE
+2025-02-15 16:41:46,123 - INFO - Updated CDW
+2025-02-15 16:41:48,046 - INFO - Updated CE
+2025-02-15 16:41:49,853 - INFO - Updated COR
+2025-02-15 16:41:51,962 - INFO - Updated CNC
+2025-02-15 16:41:54,167 - INFO - Updated CNP
+2025-02-15 16:41:55,983 - INFO - Updated CF
+2025-02-15 16:41:57,810 - INFO - Updated CRL
+2025-02-15 16:41:59,638 - INFO - Updated SCHW
+2025-02-15 16:42:01,824 - INFO - Updated CHTR
+2025-02-15 16:42:03,639 - INFO - Updated CVX
+2025-02-15 16:42:05,773 - INFO - Updated CMG
+2025-02-15 16:42:07,559 - INFO - Updated CB
+2025-02-15 16:42:09,435 - INFO - Updated CHD
+2025-02-15 16:42:11,252 - INFO - Updated CI
+2025-02-15 16:42:13,050 - INFO - Updated CINF
+2025-02-15 16:42:14,894 - INFO - Updated CTAS
+2025-02-15 16:42:16,698 - INFO - Updated CSCO
+2025-02-15 16:42:18,863 - INFO - Updated C
+2025-02-15 16:42:21,034 - INFO - Updated CFG
+2025-02-15 16:42:22,851 - INFO - Updated CLX
+2025-02-15 16:42:24,906 - INFO - Updated CME
+2025-02-15 16:42:26,755 - INFO - Updated CMS
+2025-02-15 16:42:28,826 - INFO - Updated KO
+2025-02-15 16:42:31,127 - INFO - Updated CTSH
+2025-02-15 16:42:33,572 - INFO - Updated CL
+2025-02-15 16:42:35,403 - INFO - Updated CMCSA
+2025-02-15 16:42:37,409 - INFO - Updated CAG
+2025-02-15 16:42:39,671 - INFO - Updated COP
+2025-02-15 16:42:41,483 - INFO - Updated ED
+2025-02-15 16:42:43,267 - INFO - Updated STZ
+2025-02-15 16:42:45,138 - INFO - Updated CEG
+2025-02-15 16:42:47,066 - INFO - Updated COO
+2025-02-15 16:42:48,855 - INFO - Updated CPRT
+2025-02-15 16:42:50,667 - INFO - Updated GLW
+2025-02-15 16:42:52,544 - INFO - Updated CPAY
+2025-02-15 16:42:54,394 - INFO - Updated CTVA
+2025-02-15 16:42:56,222 - INFO - Updated CSGP
+2025-02-15 16:42:58,050 - INFO - Updated COST
+2025-02-15 16:43:00,211 - INFO - Updated CTRA
+2025-02-15 16:43:02,079 - INFO - Updated CRWD
+2025-02-15 16:43:03,986 - INFO - Updated CCI
+2025-02-15 16:43:05,770 - INFO - Updated CSX
+2025-02-15 16:43:07,591 - INFO - Updated CMI
+2025-02-15 16:43:10,063 - INFO - Updated CVS
+2025-02-15 16:43:12,152 - INFO - Updated DHR
+2025-02-15 16:43:13,963 - INFO - Updated DRI
+2025-02-15 16:43:16,413 - INFO - Updated DVA
+2025-02-15 16:43:18,276 - INFO - Updated DAY
+2025-02-15 16:43:20,150 - INFO - Updated DECK
+2025-02-15 16:43:22,222 - INFO - Updated DE
+2025-02-15 16:43:24,035 - INFO - Updated DELL
+2025-02-15 16:43:25,885 - INFO - Updated DAL
+2025-02-15 16:43:27,730 - INFO - Updated DVN
+2025-02-15 16:43:29,515 - INFO - Updated DXCM
+2025-02-15 16:43:31,719 - INFO - Updated FANG
+2025-02-15 16:43:33,819 - INFO - Updated DLR
+2025-02-15 16:43:35,704 - INFO - Updated DFS
+2025-02-15 16:43:37,972 - INFO - Updated DG
+2025-02-15 16:43:39,808 - INFO - Updated DLTR
+2025-02-15 16:43:41,656 - INFO - Updated D
+2025-02-15 16:43:43,476 - INFO - Updated DPZ
+2025-02-15 16:43:45,680 - INFO - Updated DOV
+2025-02-15 16:43:47,527 - INFO - Updated DOW
+2025-02-15 16:43:49,471 - INFO - Updated DHI
+2025-02-15 16:43:51,559 - INFO - Updated DTE
+2025-02-15 16:43:53,412 - INFO - Updated DUK
+2025-02-15 16:43:55,309 - INFO - Updated DD
+2025-02-15 16:43:57,381 - INFO - Updated EMN
+2025-02-15 16:43:59,163 - INFO - Updated ETN
+2025-02-15 16:44:01,383 - INFO - Updated EBAY
+2025-02-15 16:44:03,392 - INFO - Updated ECL
+2025-02-15 16:44:05,196 - INFO - Updated EIX
+2025-02-15 16:44:06,988 - INFO - Updated EW
+2025-02-15 16:44:08,912 - INFO - Updated EA
+2025-02-15 16:44:10,735 - INFO - Updated ELV
+2025-02-15 16:44:12,805 - INFO - Updated EMR
+2025-02-15 16:44:14,664 - INFO - Updated ENPH
+2025-02-15 16:44:16,917 - INFO - Updated ETR
+2025-02-15 16:44:18,779 - INFO - Updated EOG
+2025-02-15 16:44:20,843 - INFO - Updated EPAM
+2025-02-15 16:44:22,916 - INFO - Updated EQT
+2025-02-15 16:44:24,761 - INFO - Updated EFX
+2025-02-15 16:44:26,806 - INFO - Updated EQIX
+2025-02-15 16:44:28,620 - INFO - Updated EQR
+2025-02-15 16:44:30,488 - INFO - Updated ERIE
+2025-02-15 16:44:32,310 - INFO - Updated ESS
+2025-02-15 16:44:34,154 - INFO - Updated EL
+2025-02-15 16:44:36,338 - INFO - Updated EG
+2025-02-15 16:44:36,814 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 16:44:38,163 - INFO - Updated EVRG
+2025-02-15 16:44:39,967 - INFO - Updated ES
+2025-02-15 16:44:41,767 - INFO - Updated EXC
+2025-02-15 16:44:43,600 - INFO - Updated EXPE
+2025-02-15 16:44:45,419 - INFO - Updated EXPD
+2025-02-15 16:44:47,580 - INFO - Updated EXR
+2025-02-15 16:44:49,790 - INFO - Updated XOM
+2025-02-15 16:44:51,966 - INFO - Updated FFIV
+2025-02-15 16:44:54,266 - INFO - Updated FDS
+2025-02-15 16:44:56,088 - INFO - Updated FICO
+2025-02-15 16:44:58,329 - INFO - Updated FAST
+2025-02-15 16:45:00,460 - INFO - Updated FRT
+2025-02-15 16:45:01,388 - ERROR - Error in search: name 'get_database' is not defined
+2025-02-15 16:45:02,453 - INFO - Updated FDX
+2025-02-15 16:45:03,857 - ERROR - Error in search: name 'get_database' is not defined
+2025-02-15 16:45:04,331 - INFO - Updated FIS
+2025-02-15 16:45:07,034 - INFO - Updated FITB
+2025-02-15 16:45:08,869 - INFO - Updated FSLR
+2025-02-15 16:45:10,909 - INFO - Updated FE
+2025-02-15 16:45:12,745 - INFO - Updated FI
+2025-02-15 16:45:14,577 - INFO - Updated FMC
+2025-02-15 16:45:16,946 - INFO - Updated F
+2025-02-15 16:45:18,777 - INFO - Updated FTNT
+2025-02-15 16:45:20,713 - INFO - Updated FTV
+2025-02-15 16:45:22,564 - INFO - Updated FOXA
+2025-02-15 16:45:24,997 - INFO - Updated FOX
+2025-02-15 16:45:26,829 - INFO - Updated BEN
+2025-02-15 16:45:28,737 - INFO - Updated FCX
+2025-02-15 16:45:30,641 - INFO - Updated GRMN
+2025-02-15 16:45:32,536 - INFO - Updated IT
+2025-02-15 16:45:34,373 - INFO - Updated GE
+2025-02-15 16:45:36,537 - INFO - Updated GEHC
+2025-02-15 16:45:38,679 - INFO - Updated GEV
+2025-02-15 16:45:40,582 - INFO - Updated GEN
+2025-02-15 16:45:42,693 - INFO - Updated GNRC
+2025-02-15 16:45:44,485 - INFO - Updated GD
+2025-02-15 16:45:46,285 - INFO - Updated GIS
+2025-02-15 16:45:48,076 - INFO - Updated GM
+2025-02-15 16:45:50,745 - INFO - Updated GPC
+2025-02-15 16:45:52,713 - INFO - Updated GILD
+2025-02-15 16:45:54,592 - INFO - Updated GPN
+2025-02-15 16:45:56,497 - INFO - Updated GL
+2025-02-15 16:45:58,349 - INFO - Updated GDDY
+2025-02-15 16:46:00,615 - INFO - Updated GS
+2025-02-15 16:46:02,453 - INFO - Updated HAL
+2025-02-15 16:46:04,293 - INFO - Updated HIG
+2025-02-15 16:46:06,160 - INFO - Updated HAS
+2025-02-15 16:46:07,967 - INFO - Updated HCA
+2025-02-15 16:46:09,757 - INFO - Updated DOC
+2025-02-15 16:46:11,555 - INFO - Updated HSIC
+2025-02-15 16:46:13,365 - INFO - Updated HSY
+2025-02-15 16:46:15,198 - INFO - Updated HES
+2025-02-15 16:46:17,372 - INFO - Updated HPE
+2025-02-15 16:46:19,389 - INFO - Updated HLT
+2025-02-15 16:46:21,192 - INFO - Updated HOLX
+2025-02-15 16:46:23,100 - INFO - Updated HD
+2025-02-15 16:46:24,920 - INFO - Updated HON
+2025-02-15 16:46:26,989 - INFO - Updated HRL
+2025-02-15 16:46:28,791 - INFO - Updated HST
+2025-02-15 16:46:30,609 - INFO - Updated HWM
+2025-02-15 16:46:32,714 - INFO - Updated HPQ
+2025-02-15 16:46:34,808 - INFO - Updated HUBB
+2025-02-15 16:46:36,665 - INFO - Updated HUM
+2025-02-15 16:46:38,489 - INFO - Updated HBAN
+2025-02-15 16:46:40,309 - INFO - Updated HII
+2025-02-15 16:46:42,147 - INFO - Updated IBM
+2025-02-15 16:46:44,285 - INFO - Updated IEX
+2025-02-15 16:46:46,374 - INFO - Updated IDXX
+2025-02-15 16:46:48,404 - INFO - Updated ITW
+2025-02-15 16:46:50,497 - INFO - Updated INCY
+2025-02-15 16:46:52,350 - INFO - Updated IR
+2025-02-15 16:46:54,263 - INFO - Updated PODD
+2025-02-15 16:46:56,057 - INFO - Updated INTC
+2025-02-15 16:46:58,066 - INFO - Updated ICE
+2025-02-15 16:46:59,873 - INFO - Updated IFF
+2025-02-15 16:47:01,733 - INFO - Updated IP
+2025-02-15 16:47:04,089 - INFO - Updated IPG
+2025-02-15 16:47:05,977 - INFO - Updated INTU
+2025-02-15 16:47:07,814 - INFO - Updated ISRG
+2025-02-15 16:47:09,618 - INFO - Updated IVZ
+2025-02-15 16:47:11,422 - INFO - Updated INVH
+2025-02-15 16:47:13,241 - INFO - Updated IQV
+2025-02-15 16:47:15,061 - INFO - Updated IRM
+2025-02-15 16:47:16,890 - INFO - Updated JBHT
+2025-02-15 16:47:18,674 - INFO - Updated JBL
+2025-02-15 16:47:20,718 - INFO - Updated JKHY
+2025-02-15 16:47:22,718 - INFO - Updated J
+2025-02-15 16:47:24,933 - INFO - Updated JNJ
+2025-02-15 16:47:26,766 - INFO - Updated JCI
+2025-02-15 16:47:28,545 - INFO - Updated JPM
+2025-02-15 16:47:30,647 - INFO - Updated JNPR
+2025-02-15 16:47:32,517 - INFO - Updated K
+2025-02-15 16:47:34,694 - INFO - Updated KVUE
+2025-02-15 16:47:36,565 - INFO - Updated KDP
+2025-02-15 16:47:38,381 - INFO - Updated KEY
+2025-02-15 16:47:40,267 - INFO - Updated KEYS
+2025-02-15 16:47:42,573 - INFO - Updated KMB
+2025-02-15 16:47:44,389 - INFO - Updated KIM
+2025-02-15 16:47:46,329 - INFO - Updated KMI
+2025-02-15 16:47:48,145 - INFO - Updated KKR
+2025-02-15 16:47:50,073 - INFO - Updated KLAC
+2025-02-15 16:47:52,281 - INFO - Updated KHC
+2025-02-15 16:47:54,189 - INFO - Updated KR
+2025-02-15 16:47:56,045 - INFO - Updated LHX
+2025-02-15 16:47:57,893 - INFO - Updated LH
+2025-02-15 16:47:59,705 - INFO - Updated LRCX
+2025-02-15 16:48:01,731 - INFO - Updated LW
+2025-02-15 16:48:03,581 - INFO - Updated LVS
+2025-02-15 16:48:05,470 - INFO - Updated LDOS
+2025-02-15 16:48:07,662 - INFO - Updated LEN
+2025-02-15 16:48:09,488 - INFO - Updated LII
+2025-02-15 16:48:09,750 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 16:48:11,540 - INFO - Updated LLY
+2025-02-15 16:48:13,698 - INFO - Updated LIN
+2025-02-15 16:48:15,518 - INFO - Updated LYV
+2025-02-15 16:48:17,366 - INFO - Updated LKQ
+2025-02-15 16:48:19,183 - INFO - Updated LMT
+2025-02-15 16:48:21,714 - INFO - Updated L
+2025-02-15 16:48:23,776 - INFO - Updated LOW
+2025-02-15 16:48:25,675 - INFO - Updated LULU
+2025-02-15 16:48:27,508 - INFO - Updated LYB
+2025-02-15 16:48:29,367 - INFO - Updated MTB
+2025-02-15 16:48:31,226 - INFO - Updated MPC
+2025-02-15 16:48:33,053 - INFO - Updated MKTX
+2025-02-15 16:48:34,931 - INFO - Updated MAR
+2025-02-15 16:48:36,930 - INFO - Updated MMC
+2025-02-15 16:48:38,827 - INFO - Updated MLM
+2025-02-15 16:48:40,814 - INFO - Updated MAS
+2025-02-15 16:48:42,631 - INFO - Updated MA
+2025-02-15 16:48:45,036 - INFO - Updated MTCH
+2025-02-15 16:48:47,185 - INFO - Updated MKC
+2025-02-15 16:48:48,991 - INFO - Updated MCD
+2025-02-15 16:48:51,315 - INFO - Updated MCK
+2025-02-15 16:48:53,615 - INFO - Updated MDT
+2025-02-15 16:48:55,450 - INFO - Updated MRK
+2025-02-15 16:48:57,247 - INFO - Updated META
+2025-02-15 16:48:59,071 - INFO - Updated MET
+2025-02-15 16:49:00,880 - INFO - Updated MTD
+2025-02-15 16:49:03,389 - INFO - Updated MGM
+2025-02-15 16:49:05,282 - INFO - Updated MCHP
+2025-02-15 16:49:07,482 - INFO - Updated MU
+2025-02-15 16:49:09,337 - INFO - Updated MSFT
+2025-02-15 16:49:11,233 - INFO - Updated MAA
+2025-02-15 16:49:13,075 - INFO - Updated MRNA
+2025-02-15 16:49:14,902 - INFO - Updated MHK
+2025-02-15 16:49:16,966 - INFO - Updated MOH
+2025-02-15 16:49:18,806 - INFO - Updated TAP
+2025-02-15 16:49:20,708 - INFO - Updated MDLZ
+2025-02-15 16:49:22,507 - INFO - Updated MPWR
+2025-02-15 16:49:24,644 - INFO - Updated MNST
+2025-02-15 16:49:26,518 - INFO - Updated MCO
+2025-02-15 16:49:28,390 - INFO - Updated MS
+2025-02-15 16:49:30,235 - INFO - Updated MOS
+2025-02-15 16:49:32,175 - INFO - Updated MSI
+2025-02-15 16:49:34,169 - INFO - Updated MSCI
+2025-02-15 16:49:36,199 - INFO - Updated NDAQ
+2025-02-15 16:49:38,907 - INFO - Updated NTAP
+2025-02-15 16:49:40,787 - INFO - Updated NFLX
+2025-02-15 16:49:42,894 - INFO - Updated NEM
+2025-02-15 16:49:44,728 - INFO - Updated NWSA
+2025-02-15 16:49:46,547 - INFO - Updated NWS
+2025-02-15 16:49:48,363 - INFO - Updated NEE
+2025-02-15 16:49:50,511 - INFO - Updated NKE
+2025-02-15 16:49:52,968 - INFO - Updated NI
+2025-02-15 16:49:54,775 - INFO - Updated NDSN
+2025-02-15 16:49:56,897 - INFO - Updated NSC
+2025-02-15 16:49:58,711 - INFO - Updated NTRS
+2025-02-15 16:50:00,572 - INFO - Updated NOC
+2025-02-15 16:50:02,943 - INFO - Updated NCLH
+2025-02-15 16:50:04,806 - INFO - Updated NRG
+2025-02-15 16:50:06,670 - INFO - Updated NUE
+2025-02-15 16:50:08,519 - INFO - Updated NVDA
+2025-02-15 16:50:10,411 - INFO - Updated NVR
+2025-02-15 16:50:12,221 - INFO - Updated NXPI
+2025-02-15 16:50:14,055 - INFO - Updated ORLY
+2025-02-15 16:50:16,257 - INFO - Updated OXY
+2025-02-15 16:50:18,260 - INFO - Updated ODFL
+2025-02-15 16:50:20,200 - INFO - Updated OMC
+2025-02-15 16:50:22,336 - INFO - Updated ON
+2025-02-15 16:50:24,587 - INFO - Updated OKE
+2025-02-15 16:50:26,660 - INFO - Updated ORCL
+2025-02-15 16:50:28,476 - INFO - Updated OTIS
+2025-02-15 16:50:29,318 - ERROR - Error in search: name 'get_database' is not defined
+2025-02-15 16:50:30,296 - INFO - Updated PCAR
+2025-02-15 16:50:32,135 - INFO - Updated PKG
+2025-02-15 16:50:34,112 - INFO - Updated PLTR
+2025-02-15 16:50:36,656 - INFO - Updated PANW
+2025-02-15 16:50:38,479 - INFO - Updated PARA
+2025-02-15 16:50:40,493 - INFO - Updated PH
+2025-02-15 16:50:42,453 - INFO - Updated PAYX
+2025-02-15 16:50:44,288 - INFO - Updated PAYC
+2025-02-15 16:50:46,172 - INFO - Updated PYPL
+2025-02-15 16:50:48,268 - INFO - Updated PNR
+2025-02-15 16:50:50,097 - INFO - Updated PEP
+2025-02-15 16:50:51,973 - INFO - Updated PFE
+2025-02-15 16:50:53,831 - INFO - Updated PCG
+2025-02-15 16:50:55,651 - INFO - Updated PM
+2025-02-15 16:50:57,460 - INFO - Updated PSX
+2025-02-15 16:50:59,325 - INFO - Updated PNW
+2025-02-15 16:51:01,127 - INFO - Updated PNC
+2025-02-15 16:51:03,007 - INFO - Updated POOL
+2025-02-15 16:51:04,835 - INFO - Updated PPG
+2025-02-15 16:51:06,664 - INFO - Updated PPL
+2025-02-15 16:51:08,514 - INFO - Updated PFG
+2025-02-15 16:51:10,331 - INFO - Updated PG
+2025-02-15 16:51:12,191 - INFO - Updated PGR
+2025-02-15 16:51:14,013 - INFO - Updated PLD
+2025-02-15 16:51:15,823 - INFO - Updated PRU
+2025-02-15 16:51:17,764 - INFO - Updated PEG
+2025-02-15 16:51:19,624 - INFO - Updated PTC
+2025-02-15 16:51:21,722 - INFO - Updated PSA
+2025-02-15 16:51:23,879 - INFO - Updated PHM
+2025-02-15 16:51:25,890 - INFO - Updated PWR
+2025-02-15 16:51:27,931 - INFO - Updated QCOM
+2025-02-15 16:51:29,769 - INFO - Updated DGX
+2025-02-15 16:51:31,621 - INFO - Updated RL
+2025-02-15 16:51:33,678 - INFO - Updated RJF
+2025-02-15 16:51:35,532 - INFO - Updated RTX
+2025-02-15 16:51:37,587 - INFO - Updated O
+2025-02-15 16:51:39,448 - INFO - Updated REG
+2025-02-15 16:51:41,389 - INFO - Updated REGN
+2025-02-15 16:51:43,189 - INFO - Updated RF
+2025-02-15 16:51:45,009 - INFO - Updated RSG
+2025-02-15 16:51:47,365 - INFO - Updated RMD
+2025-02-15 16:51:49,420 - INFO - Updated RVTY
+2025-02-15 16:51:51,581 - INFO - Updated ROK
+2025-02-15 16:51:53,411 - INFO - Updated ROL
+2025-02-15 16:51:55,465 - INFO - Updated ROP
+2025-02-15 16:51:57,276 - INFO - Updated ROST
+2025-02-15 16:51:59,126 - INFO - Updated RCL
+2025-02-15 16:52:01,044 - INFO - Updated SPGI
+2025-02-15 16:52:02,864 - INFO - Updated CRM
+2025-02-15 16:52:04,668 - INFO - Updated SBAC
+2025-02-15 16:52:06,529 - INFO - Updated SLB
+2025-02-15 16:52:08,377 - INFO - Updated STX
+2025-02-15 16:52:10,177 - INFO - Updated SRE
+2025-02-15 16:52:12,060 - INFO - Updated NOW
+2025-02-15 16:52:13,883 - INFO - Updated SHW
+2025-02-15 16:52:15,711 - INFO - Updated SPG
+2025-02-15 16:52:17,585 - INFO - Updated SWKS
+2025-02-15 16:52:19,397 - INFO - Updated SJM
+2025-02-15 16:52:21,229 - INFO - Updated SW
+2025-02-15 16:52:23,194 - INFO - Updated SNA
+2025-02-15 16:52:25,029 - INFO - Updated SOLV
+2025-02-15 16:52:26,990 - INFO - Updated SO
+2025-02-15 16:52:28,788 - INFO - Updated LUV
+2025-02-15 16:52:30,723 - INFO - Updated SWK
+2025-02-15 16:52:32,538 - INFO - Updated SBUX
+2025-02-15 16:52:34,613 - INFO - Updated STT
+2025-02-15 16:52:36,440 - INFO - Updated STLD
+2025-02-15 16:52:38,237 - INFO - Updated STE
+2025-02-15 16:52:40,193 - INFO - Updated SYK
+2025-02-15 16:52:42,175 - INFO - Updated SMCI
+2025-02-15 16:52:44,060 - INFO - Updated SYF
+2025-02-15 16:52:46,296 - INFO - Updated SNPS
+2025-02-15 16:52:48,615 - INFO - Updated SYY
+2025-02-15 16:52:50,444 - INFO - Updated TMUS
+2025-02-15 16:52:52,593 - INFO - Updated TROW
+2025-02-15 16:52:54,421 - INFO - Updated TTWO
+2025-02-15 16:52:56,740 - INFO - Updated TPR
+2025-02-15 16:52:58,907 - INFO - Updated TRGP
+2025-02-15 16:53:00,832 - INFO - Updated TGT
+2025-02-15 16:53:02,669 - INFO - Updated TEL
+2025-02-15 16:53:04,497 - INFO - Updated TDY
+2025-02-15 16:53:06,681 - INFO - Updated TFX
+2025-02-15 16:53:08,507 - INFO - Updated TER
+2025-02-15 16:53:10,636 - INFO - Updated TSLA
+2025-02-15 16:53:12,737 - INFO - Updated TXN
+2025-02-15 16:53:14,534 - INFO - Updated TPL
+2025-02-15 16:53:16,668 - INFO - Updated TXT
+2025-02-15 16:53:18,670 - INFO - Updated TMO
+2025-02-15 16:53:20,514 - INFO - Updated TJX
+2025-02-15 16:53:23,251 - INFO - Updated TSCO
+2025-02-15 16:53:25,909 - INFO - Updated TT
+2025-02-15 16:53:27,741 - INFO - Updated TDG
+2025-02-15 16:53:29,598 - INFO - Updated TRV
+2025-02-15 16:53:31,485 - INFO - Updated TRMB
+2025-02-15 16:53:33,337 - INFO - Updated TFC
+2025-02-15 16:53:35,345 - INFO - Updated TYL
+2025-02-15 16:53:37,302 - INFO - Updated TSN
+2025-02-15 16:53:39,270 - INFO - Updated USB
+2025-02-15 16:53:41,610 - INFO - Updated UBER
+2025-02-15 16:53:43,418 - INFO - Updated UDR
+2025-02-15 16:53:45,554 - INFO - Updated ULTA
+2025-02-15 16:53:48,549 - INFO - Updated UNP
+2025-02-15 16:53:50,517 - INFO - Updated UAL
+2025-02-15 16:53:52,317 - INFO - Updated UPS
+2025-02-15 16:53:54,264 - INFO - Updated URI
+2025-02-15 16:53:56,243 - INFO - Updated UNH
+2025-02-15 16:53:58,069 - INFO - Updated UHS
+2025-02-15 16:53:59,892 - INFO - Updated VLO
+2025-02-15 16:54:01,773 - INFO - Updated VTR
+2025-02-15 16:54:03,630 - INFO - Updated VLTO
+2025-02-15 16:54:05,498 - INFO - Updated VRSN
+2025-02-15 16:54:07,399 - INFO - Updated VRSK
+2025-02-15 16:54:09,203 - INFO - Updated VZ
+2025-02-15 16:54:11,025 - INFO - Updated VRTX
+2025-02-15 16:54:12,835 - INFO - Updated VTRS
+2025-02-15 16:54:14,632 - INFO - Updated VICI
+2025-02-15 16:54:16,796 - INFO - Updated V
+2025-02-15 16:54:19,033 - INFO - Updated VST
+2025-02-15 16:54:20,986 - INFO - Updated VMC
+2025-02-15 16:54:22,809 - INFO - Updated WRB
+2025-02-15 16:54:24,602 - INFO - Updated GWW
+2025-02-15 16:54:26,446 - INFO - Updated WAB
+2025-02-15 16:54:28,390 - INFO - Updated WBA
+2025-02-15 16:54:30,278 - INFO - Updated WMT
+2025-02-15 16:54:32,286 - INFO - Updated DIS
+2025-02-15 16:54:34,693 - INFO - Updated WBD
+2025-02-15 16:54:36,518 - INFO - Updated WM
+2025-02-15 16:54:38,599 - INFO - Updated WAT
+2025-02-15 16:54:40,562 - INFO - Updated WEC
+2025-02-15 16:54:42,358 - INFO - Updated WFC
+2025-02-15 16:54:44,271 - INFO - Updated WELL
+2025-02-15 16:54:46,075 - INFO - Updated WST
+2025-02-15 16:54:47,882 - INFO - Updated WDC
+2025-02-15 16:54:49,683 - INFO - Updated WY
+2025-02-15 16:54:51,534 - INFO - Updated WMB
+2025-02-15 16:54:53,534 - INFO - Updated WTW
+2025-02-15 16:54:55,327 - INFO - Updated WDAY
+2025-02-15 16:54:57,127 - INFO - Updated WYNN
+2025-02-15 16:54:58,963 - INFO - Updated XEL
+2025-02-15 16:55:01,198 - INFO - Updated XYL
+2025-02-15 16:55:03,346 - INFO - Updated YUM
+2025-02-15 16:55:05,173 - INFO - Updated ZBRA
+2025-02-15 16:55:07,268 - INFO - Updated ZBH
+2025-02-15 16:55:09,091 - INFO - Updated ZTS
+2025-02-15 16:55:10,134 - INFO - Stock data update completed
+2025-02-15 17:02:22,875 - INFO - Automated updates stopped
+2025-02-15 17:02:23,231 - INFO - Closed MongoDB connections
+2025-02-15 17:02:23,232 - INFO - API shutting down, stopped updates and closed connections
+2025-02-15 17:06:17,127 - INFO - Connected to MongoDB
+2025-02-15 17:06:17,127 - INFO - Automated updates started
+2025-02-15 17:06:17,127 - INFO - API started with automated updates
+2025-02-15 17:06:19,064 - INFO - Starting update for 503 companies
+2025-02-15 17:06:24,701 - INFO - Updated MMM
+2025-02-15 17:06:26,914 - INFO - Updated AOS
+2025-02-15 17:06:29,263 - INFO - Updated ABT
+2025-02-15 17:06:31,300 - INFO - Updated ABBV
+2025-02-15 17:06:33,315 - INFO - Updated ACN
+2025-02-15 17:06:35,278 - INFO - Updated ADBE
+2025-02-15 17:06:37,950 - INFO - Updated AMD
+2025-02-15 17:06:39,759 - INFO - Updated AES
+2025-02-15 17:06:41,751 - INFO - Updated AFL
+2025-02-15 17:06:43,538 - INFO - Updated A
+2025-02-15 17:06:45,378 - INFO - Updated APD
+2025-02-15 17:06:47,877 - INFO - Updated ABNB
+2025-02-15 17:06:48,137 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 17:06:49,204 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 17:06:49,745 - INFO - Updated AKAM
+2025-02-15 17:06:50,733 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 17:06:52,246 - INFO - Updated ALB
+2025-02-15 17:06:53,979 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 17:06:54,060 - INFO - Updated ARE
+2025-02-15 17:06:55,583 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 17:06:56,042 - INFO - Updated ALGN
+2025-02-15 17:06:58,494 - INFO - Updated ALLE
+2025-02-15 17:07:00,307 - INFO - Updated LNT
+2025-02-15 17:07:02,551 - INFO - Updated ALL
+2025-02-15 17:07:04,360 - INFO - Updated GOOGL
+2025-02-15 17:07:06,186 - INFO - Updated GOOG
+2025-02-15 17:07:08,379 - INFO - Updated MO
+2025-02-15 17:07:10,254 - INFO - Updated AMZN
+2025-02-15 17:07:12,018 - INFO - Updated AMCR
+2025-02-15 17:07:14,100 - INFO - Updated AEE
+2025-02-15 17:07:16,070 - INFO - Updated AEP
+2025-02-15 17:07:18,151 - INFO - Updated AXP
+2025-02-15 17:07:19,939 - INFO - Updated AIG
+2025-02-15 17:07:21,780 - INFO - Updated AMT
+2025-02-15 17:07:23,570 - INFO - Updated AWK
+2025-02-15 17:07:23,794 - ERROR - Error fetching companies: name 'get_database' is not defined
+2025-02-15 17:07:25,390 - INFO - Updated AMP
+2025-02-15 17:07:27,758 - INFO - Updated AME
+2025-02-15 17:07:29,578 - INFO - Updated AMGN
+2025-02-15 17:07:31,751 - INFO - Updated APH
+2025-02-15 17:07:33,548 - INFO - Updated ADI
+2025-02-15 17:07:35,510 - INFO - Updated ANSS
+2025-02-15 17:07:37,487 - INFO - Updated AON
+2025-02-15 17:07:39,296 - INFO - Updated APA
+2025-02-15 17:07:41,157 - INFO - Updated APO
+2025-02-15 17:07:42,956 - INFO - Updated AAPL
+2025-02-15 17:07:44,764 - INFO - Updated AMAT
+2025-02-15 17:07:46,800 - INFO - Updated APTV
+2025-02-15 17:07:48,579 - INFO - Updated ACGL
+2025-02-15 17:07:50,819 - INFO - Updated ADM
+2025-02-15 17:07:52,703 - INFO - Updated ANET
+2025-02-15 17:07:54,511 - INFO - Updated AJG
+2025-02-15 17:07:56,599 - INFO - Updated AIZ
+2025-02-15 17:07:58,404 - INFO - Updated T
+2025-02-15 17:08:00,299 - INFO - Updated ATO
+2025-02-15 17:08:02,075 - INFO - Updated ADSK
+2025-02-15 17:08:03,918 - INFO - Updated ADP
+2025-02-15 17:08:05,719 - INFO - Updated AZO
+2025-02-15 17:08:07,514 - INFO - Updated AVB
+2025-02-15 17:08:09,339 - INFO - Updated AVY
+2025-02-15 17:08:11,512 - INFO - Updated AXON
+2025-02-15 17:08:13,452 - INFO - Updated BKR
+2025-02-15 17:08:15,567 - INFO - Updated BALL
+2025-02-15 17:08:17,443 - INFO - Updated BAC
+2025-02-15 17:08:19,290 - INFO - Updated BAX
+2025-02-15 17:08:21,085 - INFO - Updated BDX
+2025-02-15 17:08:22,860 - INFO - Updated BRK.B
+2025-02-15 17:08:24,956 - INFO - Updated BBY
+2025-02-15 17:08:27,599 - INFO - Updated TECH
+2025-02-15 17:08:30,265 - INFO - Updated BIIB
+2025-02-15 17:08:32,730 - INFO - Updated BLK
+2025-02-15 17:08:34,520 - INFO - Updated BX
+2025-02-15 17:08:36,311 - INFO - Updated BK
+2025-02-15 17:08:38,547 - INFO - Updated BA
+2025-02-15 17:08:41,191 - INFO - Updated BKNG
+2025-02-15 17:08:43,226 - INFO - Updated BWA
+2025-02-15 17:08:45,239 - INFO - Updated BSX
+2025-02-15 17:08:47,052 - INFO - Updated BMY
+2025-02-15 17:08:48,868 - INFO - Updated AVGO
+2025-02-15 17:08:51,023 - INFO - Updated BR
+2025-02-15 17:08:52,901 - INFO - Updated BRO
+2025-02-15 17:08:54,722 - INFO - Updated BF.B
+2025-02-15 17:08:56,936 - INFO - Updated BLDR
+2025-02-15 17:08:58,771 - INFO - Updated BG
+2025-02-15 17:09:00,654 - INFO - Updated BXP
+2025-02-15 17:09:02,888 - INFO - Updated CHRW
+2025-02-15 17:09:04,732 - INFO - Updated CDNS
+2025-02-15 17:09:06,840 - INFO - Updated CZR
+2025-02-15 17:09:08,995 - INFO - Updated CPT
+2025-02-15 17:09:10,820 - INFO - Updated CPB
+2025-02-15 17:09:12,980 - INFO - Updated COF
+2025-02-15 17:09:15,034 - INFO - Updated CAH
+2025-02-15 17:09:17,335 - INFO - Updated KMX
+2025-02-15 17:09:19,524 - INFO - Updated CCL
+2025-02-15 17:09:21,328 - INFO - Updated CARR
+2025-02-15 17:09:23,734 - INFO - Updated CAT
+2025-02-15 17:09:25,526 - INFO - Updated CBOE
+2025-02-15 17:09:27,313 - INFO - Updated CBRE
+2025-02-15 17:09:29,382 - INFO - Updated CDW
+2025-02-15 17:09:31,206 - INFO - Updated CE
+2025-02-15 17:09:33,338 - INFO - Updated COR
+2025-02-15 17:09:35,254 - INFO - Updated CNC
+2025-02-15 17:09:37,150 - INFO - Updated CNP
+2025-02-15 17:09:39,017 - INFO - Updated CF
+2025-02-15 17:09:40,921 - INFO - Updated CRL
+2025-02-15 17:09:42,719 - INFO - Updated SCHW
+2025-02-15 17:09:44,625 - INFO - Updated CHTR
+2025-02-15 17:09:46,417 - INFO - Updated CVX
+2025-02-15 17:09:48,221 - INFO - Updated CMG
+2025-02-15 17:09:50,083 - INFO - Updated CB
+2025-02-15 17:09:51,917 - INFO - Updated CHD
+2025-02-15 17:09:54,042 - INFO - Updated CI
+2025-02-15 17:09:56,322 - INFO - Updated CINF
+2025-02-15 17:09:58,199 - INFO - Updated CTAS
+2025-02-15 17:10:00,049 - INFO - Updated CSCO
+2025-02-15 17:10:01,872 - INFO - Updated C
+2025-02-15 17:10:03,854 - INFO - Updated CFG
+2025-02-15 17:10:05,956 - INFO - Updated CLX
+2025-02-15 17:10:08,154 - INFO - Updated CME
+2025-02-15 17:10:09,968 - INFO - Updated CMS
+2025-02-15 17:10:11,860 - INFO - Updated KO
+2025-02-15 17:10:13,692 - INFO - Updated CTSH
+2025-02-15 17:10:15,649 - INFO - Updated CL
+2025-02-15 17:10:17,463 - INFO - Updated CMCSA
+2025-02-15 17:10:19,910 - INFO - Updated CAG
+2025-02-15 17:10:21,715 - INFO - Updated COP
+2025-02-15 17:10:23,619 - INFO - Updated ED
+2025-02-15 17:10:25,412 - INFO - Updated STZ
+2025-02-15 17:10:27,475 - INFO - Updated CEG
+2025-02-15 17:10:29,251 - INFO - Updated COO
+2025-02-15 17:10:31,044 - INFO - Updated CPRT
+2025-02-15 17:10:32,832 - INFO - Updated GLW
+2025-02-15 17:10:34,740 - INFO - Updated CPAY
+2025-02-15 17:10:36,508 - INFO - Updated CTVA
+2025-02-15 17:10:38,416 - INFO - Updated CSGP
+2025-02-15 17:10:40,216 - INFO - Updated COST
+2025-02-15 17:10:42,099 - INFO - Updated CTRA
+2025-02-15 17:10:43,888 - INFO - Updated CRWD
+2025-02-15 17:10:45,776 - INFO - Updated CCI
+2025-02-15 17:10:47,596 - INFO - Updated CSX
+2025-02-15 17:10:49,400 - INFO - Updated CMI
+2025-02-15 17:10:51,203 - INFO - Updated CVS
+2025-02-15 17:10:52,995 - INFO - Updated DHR
+2025-02-15 17:10:54,784 - INFO - Updated DRI
+2025-02-15 17:10:56,822 - INFO - Updated DVA
+2025-02-15 17:10:58,643 - INFO - Updated DAY
+2025-02-15 17:11:00,439 - INFO - Updated DECK
+2025-02-15 17:11:02,421 - INFO - Updated DE
+2025-02-15 17:11:04,387 - INFO - Updated DELL
+2025-02-15 17:11:06,216 - INFO - Updated DAL
+2025-02-15 17:11:07,999 - INFO - Updated DVN
+2025-02-15 17:11:09,782 - INFO - Updated DXCM
+2025-02-15 17:11:12,216 - INFO - Updated FANG
+2025-02-15 17:11:14,064 - INFO - Updated DLR
+2025-02-15 17:11:15,844 - INFO - Updated DFS
+2025-02-15 17:11:17,656 - INFO - Updated DG
+2025-02-15 17:11:19,441 - INFO - Updated DLTR
+2025-02-15 17:11:21,316 - INFO - Updated D
+2025-02-15 17:11:23,860 - INFO - Updated DPZ
+2025-02-15 17:11:26,277 - INFO - Updated DOV
+2025-02-15 17:11:28,089 - INFO - Updated DOW
+2025-02-15 17:11:30,253 - INFO - Updated DHI
+2025-02-15 17:11:32,840 - INFO - Updated DTE
+2025-02-15 17:11:34,861 - INFO - Updated DUK
+2025-02-15 17:11:37,126 - INFO - Updated DD
+2025-02-15 17:11:39,153 - INFO - Updated EMN
+2025-02-15 17:11:41,131 - INFO - Updated ETN
+2025-02-15 17:11:42,985 - INFO - Updated EBAY
+2025-02-15 17:11:45,017 - INFO - Updated ECL
+2025-02-15 17:11:47,238 - INFO - Updated EIX
+2025-02-15 17:11:49,061 - INFO - Updated EW
+2025-02-15 17:11:50,945 - INFO - Updated EA
+2025-02-15 17:11:53,029 - INFO - Updated ELV
+2025-02-15 17:11:54,869 - INFO - Updated EMR
+2025-02-15 17:11:56,724 - INFO - Updated ENPH
+2025-02-15 17:11:58,524 - INFO - Updated ETR
+2025-02-15 17:12:00,502 - INFO - Updated EOG
+2025-02-15 17:12:03,143 - INFO - Updated EPAM
+2025-02-15 17:12:05,291 - INFO - Updated EQT
+2025-02-15 17:12:07,090 - INFO - Updated EFX
+2025-02-15 17:12:08,868 - INFO - Updated EQIX
+2025-02-15 17:12:10,661 - INFO - Updated EQR
+2025-02-15 17:12:12,485 - INFO - Updated ERIE
+2025-02-15 17:12:14,266 - INFO - Updated ESS
+2025-02-15 17:12:16,045 - INFO - Updated EL
+2025-02-15 17:12:18,076 - INFO - Updated EG
+2025-02-15 17:12:19,992 - INFO - Updated EVRG
+2025-02-15 17:12:21,825 - INFO - Updated ES
+2025-02-15 17:12:23,630 - INFO - Updated EXC
+2025-02-15 17:12:25,462 - INFO - Updated EXPE
+2025-02-15 17:12:27,273 - INFO - Updated EXPD
+2025-02-15 17:12:29,141 - INFO - Updated EXR
+2025-02-15 17:12:30,957 - INFO - Updated XOM
+2025-02-15 17:12:32,765 - INFO - Updated FFIV
+2025-02-15 17:12:34,537 - INFO - Updated FDS
+2025-02-15 17:12:36,305 - INFO - Updated FICO
+2025-02-15 17:12:38,161 - INFO - Updated FAST
+2025-02-15 17:12:39,981 - INFO - Updated FRT
+2025-02-15 17:12:41,928 - INFO - Updated FDX
+2025-02-15 17:12:43,708 - INFO - Updated FIS
+2025-02-15 17:12:45,500 - INFO - Updated FITB
+2025-02-15 17:12:47,289 - INFO - Updated FSLR
+2025-02-15 17:12:49,344 - INFO - Updated FE
+2025-02-15 17:12:51,260 - INFO - Updated FI
+2025-02-15 17:12:53,077 - INFO - Updated FMC
+2025-02-15 17:12:54,886 - INFO - Updated F
+2025-02-15 17:12:56,694 - INFO - Updated FTNT
+2025-02-15 17:12:58,506 - INFO - Updated FTV
+2025-02-15 17:13:00,330 - INFO - Updated FOXA
+2025-02-15 17:13:02,356 - INFO - Updated FOX
+2025-02-15 17:13:04,203 - INFO - Updated BEN
+2025-02-15 17:13:06,702 - INFO - Updated FCX
+2025-02-15 17:13:08,532 - INFO - Updated GRMN
+2025-02-15 17:13:10,334 - INFO - Updated IT
+2025-02-15 17:13:12,126 - INFO - Updated GE
+2025-02-15 17:13:13,927 - INFO - Updated GEHC
+2025-02-15 17:13:16,114 - INFO - Updated GEV
+2025-02-15 17:13:17,937 - INFO - Updated GEN
+2025-02-15 17:13:19,713 - INFO - Updated GNRC
+2025-02-15 17:13:21,567 - INFO - Updated GD
+2025-02-15 17:13:23,356 - INFO - Updated GIS
+2025-02-15 17:13:25,129 - INFO - Updated GM
+2025-02-15 17:13:27,606 - INFO - Updated GPC
+2025-02-15 17:13:29,578 - INFO - Updated GILD
+2025-02-15 17:13:31,728 - INFO - Updated GPN
+2025-02-15 17:13:33,557 - INFO - Updated GL
+2025-02-15 17:13:35,768 - INFO - Updated GDDY
+2025-02-15 17:13:37,613 - INFO - Updated GS
+2025-02-15 17:13:39,692 - INFO - Updated HAL
+2025-02-15 17:13:41,837 - INFO - Updated HIG
+2025-02-15 17:13:43,777 - INFO - Updated HAS
+2025-02-15 17:13:45,594 - INFO - Updated HCA
+2025-02-15 17:13:47,403 - INFO - Updated DOC
+2025-02-15 17:13:49,214 - INFO - Updated HSIC
+2025-02-15 17:13:50,988 - INFO - Updated HSY
+2025-02-15 17:13:53,154 - INFO - Updated HES
+2025-02-15 17:13:54,949 - INFO - Updated HPE
+2025-02-15 17:13:56,813 - INFO - Updated HLT
+2025-02-15 17:13:59,033 - INFO - Updated HOLX
+2025-02-15 17:14:00,950 - INFO - Updated HD
+2025-02-15 17:14:02,916 - INFO - Updated HON
+2025-02-15 17:14:04,757 - INFO - Updated HRL
+2025-02-15 17:14:06,709 - INFO - Updated HST
+2025-02-15 17:14:08,644 - INFO - Updated HWM
+2025-02-15 17:14:10,422 - INFO - Updated HPQ
+2025-02-15 17:14:12,239 - INFO - Updated HUBB
+2025-02-15 17:14:14,021 - INFO - Updated HUM
+2025-02-15 17:14:16,103 - INFO - Updated HBAN
+2025-02-15 17:14:17,886 - INFO - Updated HII
+2025-02-15 17:14:19,928 - INFO - Updated IBM
+2025-02-15 17:14:22,045 - INFO - Updated IEX
+2025-02-15 17:14:23,889 - INFO - Updated IDXX
+2025-02-15 17:14:25,705 - INFO - Updated ITW
+2025-02-15 17:14:27,747 - INFO - Updated INCY
+2025-02-15 17:14:30,463 - INFO - Updated IR
+2025-02-15 17:14:32,655 - INFO - Updated PODD
+2025-02-15 17:14:34,546 - INFO - Updated INTC
+2025-02-15 17:14:36,374 - INFO - Updated ICE
+2025-02-15 17:14:38,207 - INFO - Updated IFF
+2025-02-15 17:14:40,054 - INFO - Updated IP
+2025-02-15 17:14:42,178 - INFO - Updated IPG
+2025-02-15 17:14:44,466 - INFO - Updated INTU
+2025-02-15 17:14:46,238 - INFO - Updated ISRG
+2025-02-15 17:14:48,115 - INFO - Updated IVZ
+2025-02-15 17:14:49,923 - INFO - Updated INVH
+2025-02-15 17:14:51,710 - INFO - Updated IQV
+2025-02-15 17:14:54,010 - INFO - Updated IRM
+2025-02-15 17:14:55,786 - INFO - Updated JBHT
+2025-02-15 17:14:57,641 - INFO - Updated JBL
+2025-02-15 17:14:59,451 - INFO - Updated JKHY
+2025-02-15 17:15:01,262 - INFO - Updated J
+2025-02-15 17:15:03,177 - INFO - Updated JNJ
+2025-02-15 17:15:05,082 - INFO - Updated JCI
+2025-02-15 17:15:07,112 - INFO - Updated JPM
+2025-02-15 17:15:09,075 - INFO - Updated JNPR
+2025-02-15 17:15:10,879 - INFO - Updated K
+2025-02-15 17:15:12,720 - INFO - Updated KVUE
+2025-02-15 17:15:14,562 - INFO - Updated KDP
+2025-02-15 17:15:16,359 - INFO - Updated KEY
+2025-02-15 17:15:18,182 - INFO - Updated KEYS
+2025-02-15 17:15:19,971 - INFO - Updated KMB
+2025-02-15 17:15:21,789 - INFO - Updated KIM
+2025-02-15 17:15:23,647 - INFO - Updated KMI
+2025-02-15 17:15:25,424 - INFO - Updated KKR
+2025-02-15 17:15:27,201 - INFO - Updated KLAC
+2025-02-15 17:15:28,981 - INFO - Updated KHC
+2025-02-15 17:15:31,045 - INFO - Updated KR
+2025-02-15 17:15:32,845 - INFO - Updated LHX
+2025-02-15 17:15:34,707 - INFO - Updated LH
+2025-02-15 17:15:36,530 - INFO - Updated LRCX
+2025-02-15 17:15:38,586 - INFO - Updated LW
+2025-02-15 17:15:40,679 - INFO - Updated LVS
+2025-02-15 17:15:42,459 - INFO - Updated LDOS
+2025-02-15 17:15:44,275 - INFO - Updated LEN
+2025-02-15 17:15:46,405 - INFO - Updated LII
+2025-02-15 17:15:48,391 - INFO - Updated LLY
+2025-02-15 17:15:50,739 - INFO - Updated LIN
+2025-02-15 17:15:52,676 - INFO - Updated LYV
+2025-02-15 17:15:54,494 - INFO - Updated LKQ
+2025-02-15 17:15:56,314 - INFO - Updated LMT
+2025-02-15 17:15:58,154 - INFO - Updated L
+2025-02-15 17:15:59,985 - INFO - Updated LOW
+2025-02-15 17:16:02,165 - INFO - Updated LULU
+2025-02-15 17:16:03,952 - INFO - Updated LYB
+2025-02-15 17:16:05,782 - INFO - Updated MTB
+2025-02-15 17:16:07,625 - INFO - Updated MPC
+2025-02-15 17:16:09,504 - INFO - Updated MKTX
+2025-02-15 17:16:11,714 - INFO - Updated MAR
+2025-02-15 17:16:13,507 - INFO - Updated MMC
+2025-02-15 17:16:15,275 - INFO - Updated MLM
+2025-02-15 17:16:17,368 - INFO - Updated MAS
+2025-02-15 17:16:19,335 - INFO - Updated MA
+2025-02-15 17:16:21,195 - INFO - Updated MTCH
+2025-02-15 17:16:23,027 - INFO - Updated MKC
+2025-02-15 17:16:24,828 - INFO - Updated MCD
+2025-02-15 17:16:27,055 - INFO - Updated MCK
+2025-02-15 17:16:29,431 - INFO - Updated MDT
+2025-02-15 17:16:31,273 - INFO - Updated MRK
+2025-02-15 17:16:33,311 - INFO - Updated META
+2025-02-15 17:16:35,113 - INFO - Updated MET
+2025-02-15 17:16:37,430 - INFO - Updated MTD
+2025-02-15 17:16:39,264 - INFO - Updated MGM
+2025-02-15 17:16:41,096 - INFO - Updated MCHP
+2025-02-15 17:16:43,291 - INFO - Updated MU
+2025-02-15 17:16:45,104 - INFO - Updated MSFT
+2025-02-15 17:16:47,440 - INFO - Updated MAA
+2025-02-15 17:16:49,268 - INFO - Updated MRNA
+2025-02-15 17:16:51,136 - INFO - Updated MHK
+2025-02-15 17:16:53,149 - INFO - Updated MOH
+2025-02-15 17:16:54,999 - INFO - Updated TAP
+2025-02-15 17:16:57,200 - INFO - Updated MDLZ
+2025-02-15 17:16:58,996 - INFO - Updated MPWR
+2025-02-15 17:17:01,116 - INFO - Updated MNST
+2025-02-15 17:17:03,039 - INFO - Updated MCO
+2025-02-15 17:17:04,970 - INFO - Updated MS
+2025-02-15 17:17:06,823 - INFO - Updated MOS
+2025-02-15 17:17:09,024 - INFO - Updated MSI
+2025-02-15 17:17:10,815 - INFO - Updated MSCI
+2025-02-15 17:17:12,631 - INFO - Updated NDAQ
+2025-02-15 17:17:14,444 - INFO - Updated NTAP
+2025-02-15 17:17:16,249 - INFO - Updated NFLX
+2025-02-15 17:17:18,204 - INFO - Updated NEM
+2025-02-15 17:17:20,715 - INFO - Updated NWSA
+2025-02-15 17:17:22,481 - INFO - Updated NWS
+2025-02-15 17:17:24,417 - INFO - Updated NEE
+2025-02-15 17:17:26,211 - INFO - Updated NKE
+2025-02-15 17:17:28,019 - INFO - Updated NI
+2025-02-15 17:17:29,841 - INFO - Updated NDSN
+2025-02-15 17:17:32,026 - INFO - Updated NSC
+2025-02-15 17:17:34,181 - INFO - Updated NTRS
+2025-02-15 17:17:35,972 - INFO - Updated NOC
+2025-02-15 17:17:37,753 - INFO - Updated NCLH
+2025-02-15 17:17:39,552 - INFO - Updated NRG
+2025-02-15 17:17:41,368 - INFO - Updated NUE
+2025-02-15 17:17:43,173 - INFO - Updated NVDA
+2025-02-15 17:17:45,013 - INFO - Updated NVR
+2025-02-15 17:17:46,868 - INFO - Updated NXPI
+2025-02-15 17:17:48,704 - INFO - Updated ORLY
+2025-02-15 17:17:50,983 - INFO - Updated OXY
+2025-02-15 17:17:53,140 - INFO - Updated ODFL
+2025-02-15 17:17:55,922 - INFO - Updated OMC
+2025-02-15 17:17:57,743 - INFO - Updated ON
+2025-02-15 17:17:59,956 - INFO - Updated OKE
+2025-02-15 17:18:01,788 - INFO - Updated ORCL
+2025-02-15 17:18:04,480 - INFO - Updated OTIS
+2025-02-15 17:18:07,361 - INFO - Updated PCAR
+2025-02-15 17:18:09,505 - INFO - Updated PKG
+2025-02-15 17:18:11,921 - INFO - Updated PLTR
+2025-02-15 17:18:13,745 - INFO - Updated PANW
+2025-02-15 17:18:15,617 - INFO - Updated PARA
+2025-02-15 17:18:17,463 - INFO - Updated PH
+2025-02-15 17:18:19,310 - INFO - Updated PAYX
+2025-02-15 17:18:21,124 - INFO - Updated PAYC
+2025-02-15 17:18:23,083 - INFO - Updated PYPL
+2025-02-15 17:18:24,933 - INFO - Updated PNR
+2025-02-15 17:18:27,063 - INFO - Updated PEP
+2025-02-15 17:18:28,864 - INFO - Updated PFE
+2025-02-15 17:18:30,687 - INFO - Updated PCG
+2025-02-15 17:18:32,989 - INFO - Updated PM
+2025-02-15 17:18:34,833 - INFO - Updated PSX
+2025-02-15 17:18:36,628 - INFO - Updated PNW
+2025-02-15 17:18:38,834 - INFO - Updated PNC
+2025-02-15 17:18:40,668 - INFO - Updated POOL
+2025-02-15 17:18:42,472 - INFO - Updated PPG
+2025-02-15 17:18:44,304 - INFO - Updated PPL
+2025-02-15 17:18:46,594 - INFO - Updated PFG
+2025-02-15 17:18:48,402 - INFO - Updated PG
+2025-02-15 17:18:50,213 - INFO - Updated PGR
+2025-02-15 17:18:52,418 - INFO - Updated PLD
+2025-02-15 17:18:54,709 - INFO - Updated PRU
+2025-02-15 17:18:56,621 - INFO - Updated PEG
+2025-02-15 17:18:59,074 - INFO - Updated PTC
+2025-02-15 17:19:01,452 - INFO - Updated PSA
+2025-02-15 17:19:03,626 - INFO - Updated PHM
+2025-02-15 17:19:05,444 - INFO - Updated PWR
+2025-02-15 17:19:07,628 - INFO - Updated QCOM
+2025-02-15 17:19:09,448 - INFO - Updated DGX
+2025-02-15 17:19:11,258 - INFO - Updated RL
+2025-02-15 17:19:13,273 - INFO - Updated RJF
+2025-02-15 17:19:15,104 - INFO - Updated RTX
+2025-02-15 17:19:16,941 - INFO - Updated O
+2025-02-15 17:19:18,737 - INFO - Updated REG
+2025-02-15 17:19:20,735 - INFO - Updated REGN
+2025-02-15 17:19:22,533 - INFO - Updated RF
+2025-02-15 17:19:24,571 - INFO - Updated RSG
+2025-02-15 17:19:26,352 - INFO - Updated RMD
+2025-02-15 17:19:28,832 - INFO - Updated RVTY
+2025-02-15 17:19:30,649 - INFO - Updated ROK
+2025-02-15 17:19:33,107 - INFO - Updated ROL
+2025-02-15 17:19:34,937 - INFO - Updated ROP
+2025-02-15 17:19:36,738 - INFO - Updated ROST
+2025-02-15 17:19:38,537 - INFO - Updated RCL
+2025-02-15 17:19:40,310 - INFO - Updated SPGI
+2025-02-15 17:19:42,094 - INFO - Updated CRM
+2025-02-15 17:19:43,909 - INFO - Updated SBAC
+2025-02-15 17:19:45,969 - INFO - Updated SLB
+2025-02-15 17:19:47,766 - INFO - Updated STX
+2025-02-15 17:19:49,982 - INFO - Updated SRE
+2025-02-15 17:19:51,845 - INFO - Updated NOW
+2025-02-15 17:19:53,650 - INFO - Updated SHW
+2025-02-15 17:19:55,624 - INFO - Updated SPG
+2025-02-15 17:19:57,444 - INFO - Updated SWKS
+2025-02-15 17:19:59,294 - INFO - Updated SJM
+2025-02-15 17:20:01,169 - INFO - Updated SW
+2025-02-15 17:20:03,097 - INFO - Updated SNA
+2025-02-15 17:20:04,907 - INFO - Updated SOLV
+2025-02-15 17:20:07,214 - INFO - Updated SO
+2025-02-15 17:20:09,290 - INFO - Updated LUV
+2025-02-15 17:20:11,245 - INFO - Updated SWK
+2025-02-15 17:20:13,049 - INFO - Updated SBUX
+2025-02-15 17:20:14,984 - INFO - Updated STT
+2025-02-15 17:20:17,220 - INFO - Updated STLD
+2025-02-15 17:20:19,006 - INFO - Updated STE
+2025-02-15 17:20:20,816 - INFO - Updated SYK
+2025-02-15 17:20:22,642 - INFO - Updated SMCI
+2025-02-15 17:20:24,545 - INFO - Updated SYF
+2025-02-15 17:20:26,340 - INFO - Updated SNPS
+2025-02-15 17:20:28,142 - INFO - Updated SYY
+2025-02-15 17:20:29,952 - INFO - Updated TMUS
+2025-02-15 17:20:31,803 - INFO - Updated TROW
+2025-02-15 17:20:33,599 - INFO - Updated TTWO
+2025-02-15 17:20:35,402 - INFO - Updated TPR
+2025-02-15 17:20:37,183 - INFO - Updated TRGP
+2025-02-15 17:20:38,977 - INFO - Updated TGT
+2025-02-15 17:20:41,168 - INFO - Updated TEL
+2025-02-15 17:20:42,975 - INFO - Updated TDY
+2025-02-15 17:20:44,880 - INFO - Updated TFX
+2025-02-15 17:20:46,960 - INFO - Updated TER
+2025-02-15 17:20:48,739 - INFO - Updated TSLA
+2025-02-15 17:20:50,773 - INFO - Updated TXN
+2025-02-15 17:20:52,867 - INFO - Updated TPL
+2025-02-15 17:20:54,659 - INFO - Updated TXT
+2025-02-15 17:20:56,446 - INFO - Updated TMO
+2025-02-15 17:20:58,259 - INFO - Updated TJX
+2025-02-15 17:21:00,438 - INFO - Updated TSCO
+2025-02-15 17:21:02,555 - INFO - Updated TT
+2025-02-15 17:21:04,352 - INFO - Updated TDG
+2025-02-15 17:21:06,185 - INFO - Updated TRV
+2025-02-15 17:21:08,367 - INFO - Updated TRMB
+2025-02-15 17:21:10,561 - INFO - Updated TFC
+2025-02-15 17:21:12,926 - INFO - Updated TYL
+2025-02-15 17:21:14,803 - INFO - Updated TSN
+2025-02-15 17:21:16,591 - INFO - Updated USB
+2025-02-15 17:21:18,383 - INFO - Updated UBER
+2025-02-15 17:21:20,203 - INFO - Updated UDR
+2025-02-15 17:21:22,513 - INFO - Updated ULTA
+2025-02-15 17:21:24,354 - INFO - Updated UNP
+2025-02-15 17:21:26,141 - INFO - Updated UAL
+2025-02-15 17:21:28,239 - INFO - Updated UPS
+2025-02-15 17:21:30,111 - INFO - Updated URI
+2025-02-15 17:21:33,447 - INFO - Updated UNH
+2025-02-15 17:21:35,243 - INFO - Updated UHS
+2025-02-15 17:21:37,489 - INFO - Updated VLO
+2025-02-15 17:21:39,295 - INFO - Updated VTR
+2025-02-15 17:21:41,096 - INFO - Updated VLTO
+2025-02-15 17:21:43,018 - INFO - Updated VRSN
+2025-02-15 17:21:44,942 - INFO - Updated VRSK
+2025-02-15 17:21:46,982 - INFO - Updated VZ
+2025-02-15 17:21:48,779 - INFO - Updated VRTX
+2025-02-15 17:21:50,578 - INFO - Updated VTRS
+2025-02-15 17:21:52,376 - INFO - Updated VICI
+2025-02-15 17:21:54,181 - INFO - Updated V
+2025-02-15 17:21:55,964 - INFO - Updated VST
+2025-02-15 17:21:57,744 - INFO - Updated VMC
+2025-02-15 17:21:59,520 - INFO - Updated WRB
+2025-02-15 17:22:01,524 - INFO - Updated GWW
+2025-02-15 17:22:03,322 - INFO - Updated WAB
+2025-02-15 17:22:05,126 - INFO - Updated WBA
+2025-02-15 17:22:06,899 - INFO - Updated WMT
+2025-02-15 17:22:09,091 - INFO - Updated DIS
+2025-02-15 17:22:10,902 - INFO - Updated WBD
+2025-02-15 17:22:12,706 - INFO - Updated WM
+2025-02-15 17:22:14,511 - INFO - Updated WAT
+2025-02-15 17:22:16,692 - INFO - Updated WEC
+2025-02-15 17:22:18,879 - INFO - Updated WFC
+2025-02-15 17:22:20,989 - INFO - Updated WELL
+2025-02-15 17:22:22,830 - INFO - Updated WST
+2025-02-15 17:22:24,640 - INFO - Updated WDC
+2025-02-15 17:22:26,449 - INFO - Updated WY
+2025-02-15 17:22:28,760 - INFO - Updated WMB
+2025-02-15 17:22:30,630 - INFO - Updated WTW
+2025-02-15 17:22:33,379 - INFO - Updated WDAY
+2025-02-15 17:22:35,275 - INFO - Updated WYNN
+2025-02-15 17:22:37,076 - INFO - Updated XEL
+2025-02-15 17:22:38,901 - INFO - Updated XYL
+2025-02-15 17:22:40,703 - INFO - Updated YUM
+2025-02-15 17:22:42,559 - INFO - Updated ZBRA
+2025-02-15 17:22:44,350 - INFO - Updated ZBH
+2025-02-15 17:22:46,288 - INFO - Updated ZTS
+2025-02-15 17:22:47,375 - INFO - Stock data update completed
+2025-02-15 17:32:25,826 - INFO - Starting update for 503 companies
+2025-02-15 17:32:28,857 - INFO - Connected to MongoDB
+2025-02-15 17:32:31,361 - INFO - Updated MMM
+2025-02-15 17:32:33,496 - INFO - Updated AOS
+2025-02-15 17:32:35,362 - INFO - Updated ABT
+2025-02-15 17:32:37,413 - INFO - Updated ABBV
+2025-02-15 17:32:40,379 - INFO - Updated ACN
+2025-02-15 17:32:42,471 - INFO - Updated ADBE
+2025-02-15 17:32:44,447 - INFO - Updated AMD
+2025-02-15 17:32:46,500 - INFO - Updated AES
+2025-02-15 17:32:48,314 - INFO - Updated AFL
+2025-02-15 17:32:51,285 - INFO - Updated A
+2025-02-15 17:32:53,170 - INFO - Updated APD
+2025-02-15 17:32:55,221 - INFO - Updated ABNB
+2025-02-15 17:32:57,229 - INFO - Updated AKAM
+2025-02-15 17:32:59,004 - INFO - Updated ALB
+2025-02-15 17:33:00,813 - INFO - Updated ARE
+2025-02-15 17:33:03,595 - INFO - Updated ALGN
+2025-02-15 17:33:05,374 - INFO - Updated ALLE
+2025-02-15 17:33:07,295 - INFO - Updated LNT
+2025-02-15 17:33:09,086 - INFO - Updated ALL
+2025-02-15 17:33:10,884 - INFO - Updated GOOGL
+2025-02-15 17:33:12,956 - INFO - Updated GOOG
+2025-02-15 17:33:15,163 - INFO - Updated MO
+2025-02-15 17:33:15,406 - ERROR - Error in search: name 'math' is not defined
+2025-02-15 17:33:17,471 - INFO - Updated AMZN
+2025-02-15 17:33:19,446 - INFO - Updated AMCR
+2025-02-15 17:33:21,767 - INFO - Updated AEE
+2025-02-15 17:33:24,041 - INFO - Updated AEP
+2025-02-15 17:33:25,925 - INFO - Updated AXP
+2025-02-15 17:33:28,083 - INFO - Updated AIG
+2025-02-15 17:33:31,092 - INFO - Updated AMT
+2025-02-15 17:33:32,860 - INFO - Updated AWK
+2025-02-15 17:33:34,693 - INFO - Updated AMP
+2025-02-15 17:33:36,656 - INFO - Updated AME
+2025-02-15 17:33:38,827 - INFO - Updated AMGN
+2025-02-15 17:33:40,647 - INFO - Updated APH
+2025-02-15 17:33:42,458 - INFO - Updated ADI
+2025-02-15 17:33:44,293 - INFO - Updated ANSS
+2025-02-15 17:33:46,069 - INFO - Updated AON
+2025-02-15 17:33:47,849 - INFO - Updated APA
+2025-02-15 17:33:49,626 - INFO - Updated APO
+2025-02-15 17:33:51,457 - INFO - Updated AAPL
+2025-02-15 17:33:53,252 - INFO - Updated AMAT
+2025-02-15 17:33:55,226 - INFO - Updated APTV
+2025-02-15 17:33:57,078 - INFO - Updated ACGL
+2025-02-15 17:33:58,894 - INFO - Updated ADM
+2025-02-15 17:34:00,889 - INFO - Updated ANET
+2025-02-15 17:34:02,911 - INFO - Updated AJG
+2025-02-15 17:34:04,747 - INFO - Updated AIZ
+2025-02-15 17:34:06,668 - INFO - Updated T
+2025-02-15 17:34:08,467 - INFO - Updated ATO
+2025-02-15 17:34:10,271 - INFO - Updated ADSK
+2025-02-15 17:34:10,314 - ERROR - Error in search: name 'math' is not defined
+2025-02-15 17:34:12,244 - INFO - Updated ADP
+2025-02-15 17:34:14,015 - INFO - Updated AZO
+2025-02-15 17:34:16,217 - INFO - Updated AVB
+2025-02-15 17:34:18,059 - INFO - Updated AVY
+2025-02-15 17:34:19,926 - INFO - Updated AXON
+2025-02-15 17:34:22,154 - INFO - Updated BKR
+2025-02-15 17:34:23,935 - INFO - Updated BALL
+2025-02-15 17:34:25,747 - INFO - Updated BAC
+2025-02-15 17:34:27,779 - INFO - Updated BAX
+2025-02-15 17:34:29,580 - INFO - Updated BDX
+2025-02-15 17:34:31,658 - INFO - Updated BRK.B
+2025-02-15 17:34:33,490 - INFO - Updated BBY
+2025-02-15 17:34:35,767 - INFO - Updated TECH
+2025-02-15 17:34:37,719 - INFO - Updated BIIB
+2025-02-15 17:34:39,507 - INFO - Updated BLK
+2025-02-15 17:34:41,335 - INFO - Updated BX
+2025-02-15 17:34:43,104 - INFO - Updated BK
+2025-02-15 17:34:44,876 - INFO - Updated BA
+2025-02-15 17:34:46,709 - INFO - Updated BKNG
+2025-02-15 17:34:48,516 - INFO - Updated BWA
+2025-02-15 17:34:50,738 - INFO - Updated BSX
+2025-02-15 17:34:52,894 - INFO - Updated BMY
+2025-02-15 17:34:54,801 - INFO - Updated AVGO
+2025-02-15 17:34:56,587 - INFO - Updated BR
+2025-02-15 17:34:58,379 - INFO - Updated BRO
+2025-02-15 17:35:00,445 - INFO - Updated BF.B
+2025-02-15 17:35:02,363 - INFO - Updated BLDR
+2025-02-15 17:35:04,251 - INFO - Updated BG
+2025-02-15 17:35:06,103 - INFO - Updated BXP
+2025-02-15 17:35:08,176 - INFO - Updated CHRW
+2025-02-15 17:35:10,255 - INFO - Updated CDNS
+2025-02-15 17:35:12,037 - INFO - Updated CZR
+2025-02-15 17:35:13,976 - INFO - Updated CPT
+2025-02-15 17:35:16,031 - INFO - Updated CPB
+2025-02-15 17:35:18,016 - INFO - Updated COF
+2025-02-15 17:35:20,261 - INFO - Updated CAH
+2025-02-15 17:35:22,053 - INFO - Updated KMX
+2025-02-15 17:35:24,131 - INFO - Updated CCL
+2025-02-15 17:35:26,212 - INFO - Updated CARR
+2025-02-15 17:35:28,039 - INFO - Updated CAT
+2025-02-15 17:35:30,266 - INFO - Updated CBOE
+2025-02-15 17:35:32,312 - INFO - Updated CBRE
+2025-02-15 17:35:34,136 - INFO - Updated CDW
+2025-02-15 17:35:36,673 - INFO - Updated CE
+2025-02-15 17:35:38,836 - INFO - Updated COR
+2025-02-15 17:35:40,613 - INFO - Updated CNC
+2025-02-15 17:35:42,456 - INFO - Updated CNP
+2025-02-15 17:35:44,734 - INFO - Updated CF
+2025-02-15 17:35:46,764 - INFO - Updated CRL
+2025-02-15 17:35:48,791 - INFO - Updated SCHW
+2025-02-15 17:35:50,709 - INFO - Updated CHTR
+2025-02-15 17:35:52,888 - INFO - Updated CVX
+2025-02-15 17:35:54,691 - INFO - Updated CMG
+2025-02-15 17:35:56,527 - INFO - Updated CB
+2025-02-15 17:35:58,375 - INFO - Updated CHD
+2025-02-15 17:36:00,260 - INFO - Updated CI
+2025-02-15 17:36:02,550 - INFO - Updated CINF
+2025-02-15 17:36:04,350 - INFO - Updated CTAS
+2025-02-15 17:36:06,643 - INFO - Updated CSCO
+2025-02-15 17:36:08,427 - INFO - Updated C
+2025-02-15 17:36:10,292 - INFO - Updated CFG
+2025-02-15 17:36:13,051 - INFO - Updated CLX
+2025-02-15 17:36:15,325 - INFO - Updated CME
+2025-02-15 17:36:17,133 - INFO - Updated CMS
+2025-02-15 17:36:19,269 - INFO - Updated KO
+2025-02-15 17:36:21,108 - INFO - Updated CTSH
+2025-02-15 17:36:23,246 - INFO - Updated CL
+2025-02-15 17:36:25,028 - INFO - Updated CMCSA
+2025-02-15 17:36:27,233 - INFO - Updated CAG
+2025-02-15 17:36:29,030 - INFO - Updated COP
+2025-02-15 17:36:30,990 - INFO - Updated ED
+2025-02-15 17:36:33,208 - INFO - Updated STZ
+2025-02-15 17:36:35,008 - INFO - Updated CEG
+2025-02-15 17:36:36,829 - INFO - Updated COO
+2025-02-15 17:36:39,108 - INFO - Updated CPRT
+2025-02-15 17:36:40,917 - INFO - Updated GLW
+2025-02-15 17:36:43,064 - INFO - Updated CPAY
+2025-02-15 17:36:44,846 - INFO - Updated CTVA
+2025-02-15 17:36:46,929 - INFO - Updated CSGP
+2025-02-15 17:36:48,733 - INFO - Updated COST
+2025-02-15 17:36:50,601 - INFO - Updated CTRA
+2025-02-15 17:36:52,412 - INFO - Updated CRWD
+2025-02-15 17:36:54,501 - INFO - Updated CCI
+2025-02-15 17:36:56,484 - INFO - Updated CSX
+2025-02-15 17:36:58,281 - INFO - Updated CMI
+2025-02-15 17:37:00,178 - INFO - Updated CVS
+2025-02-15 17:37:02,017 - INFO - Updated DHR
+2025-02-15 17:37:03,830 - INFO - Updated DRI
+2025-02-15 17:37:05,702 - INFO - Updated DVA
+2025-02-15 17:37:07,539 - INFO - Updated DAY
+2025-02-15 17:37:09,807 - INFO - Updated DECK
+2025-02-15 17:37:11,789 - INFO - Updated DE
+2025-02-15 17:37:13,577 - INFO - Updated DELL
+2025-02-15 17:37:15,411 - INFO - Updated DAL
+2025-02-15 17:37:17,236 - INFO - Updated DVN
+2025-02-15 17:37:19,037 - INFO - Updated DXCM
+2025-02-15 17:37:20,961 - INFO - Updated FANG
+2025-02-15 17:37:23,063 - INFO - Updated DLR
+2025-02-15 17:37:24,863 - INFO - Updated DFS
+2025-02-15 17:37:26,681 - INFO - Updated DG
+2025-02-15 17:37:28,611 - INFO - Updated DLTR
+2025-02-15 17:37:30,441 - INFO - Updated D
+2025-02-15 17:37:32,324 - INFO - Updated DPZ
+2025-02-15 17:37:34,124 - INFO - Updated DOV
+2025-02-15 17:37:36,285 - INFO - Updated DOW
+2025-02-15 17:37:38,408 - INFO - Updated DHI
+2025-02-15 17:37:41,150 - INFO - Updated DTE
+2025-02-15 17:37:43,361 - INFO - Updated DUK
+2025-02-15 17:37:45,442 - INFO - Updated DD
+2025-02-15 17:37:47,516 - INFO - Updated EMN
+2025-02-15 17:37:49,324 - INFO - Updated ETN
+2025-02-15 17:37:51,247 - INFO - Updated EBAY
+2025-02-15 17:37:53,076 - INFO - Updated ECL
+2025-02-15 17:37:55,030 - INFO - Updated EIX
+2025-02-15 17:37:56,873 - INFO - Updated EW
+2025-02-15 17:37:58,681 - INFO - Updated EA
+2025-02-15 17:38:00,689 - INFO - Updated ELV
+2025-02-15 17:38:02,485 - INFO - Updated EMR
+2025-02-15 17:38:04,293 - INFO - Updated ENPH
+2025-02-15 17:38:06,242 - INFO - Updated ETR
+2025-02-15 17:38:08,245 - INFO - Updated EOG
+2025-02-15 17:38:10,080 - INFO - Updated EPAM
+2025-02-15 17:38:12,218 - INFO - Updated EQT
+2025-02-15 17:38:13,994 - INFO - Updated EFX
+2025-02-15 17:38:16,072 - INFO - Updated EQIX
+2025-02-15 17:38:17,908 - INFO - Updated EQR
+2025-02-15 17:38:19,829 - INFO - Updated ERIE
+2025-02-15 17:38:21,837 - INFO - Updated ESS
+2025-02-15 17:38:23,637 - INFO - Updated EL
+2025-02-15 17:38:25,546 - INFO - Updated EG
+2025-02-15 17:38:27,321 - INFO - Updated EVRG
+2025-02-15 17:38:29,129 - INFO - Updated ES
+2025-02-15 17:38:31,133 - INFO - Updated EXC
+2025-02-15 17:38:32,909 - INFO - Updated EXPE
+2025-02-15 17:38:34,818 - INFO - Updated EXPD
+2025-02-15 17:38:36,942 - INFO - Updated EXR
+2025-02-15 17:38:38,801 - INFO - Updated XOM
+2025-02-15 17:38:40,614 - INFO - Updated FFIV
+2025-02-15 17:38:42,389 - INFO - Updated FDS
+2025-02-15 17:38:44,206 - INFO - Updated FICO
+2025-02-15 17:38:46,429 - INFO - Updated FAST
+2025-02-15 17:38:48,517 - INFO - Updated FRT
+2025-02-15 17:38:50,364 - INFO - Updated FDX
+2025-02-15 17:38:52,233 - INFO - Updated FIS
+2025-02-15 17:38:54,017 - INFO - Updated FITB
+2025-02-15 17:38:55,813 - INFO - Updated FSLR
+2025-02-15 17:38:57,632 - INFO - Updated FE
+2025-02-15 17:38:59,425 - INFO - Updated FI
+2025-02-15 17:39:01,513 - INFO - Updated FMC
+2025-02-15 17:39:03,318 - INFO - Updated F
+2025-02-15 17:39:05,214 - INFO - Updated FTNT
+2025-02-15 17:39:07,013 - INFO - Updated FTV
+2025-02-15 17:39:09,142 - INFO - Updated FOXA
+2025-02-15 17:39:10,978 - INFO - Updated FOX
+2025-02-15 17:39:12,814 - INFO - Updated BEN
+2025-02-15 17:39:14,611 - INFO - Updated FCX
+2025-02-15 17:39:16,569 - INFO - Updated GRMN
+2025-02-15 17:39:18,469 - INFO - Updated IT
+2025-02-15 17:39:20,259 - INFO - Updated GE
+2025-02-15 17:39:22,155 - INFO - Updated GEHC
+2025-02-15 17:39:24,390 - INFO - Updated GEV
+2025-02-15 17:39:26,191 - INFO - Updated GEN
+2025-02-15 17:39:28,015 - INFO - Updated GNRC
+2025-02-15 17:39:30,354 - INFO - Updated GD
+2025-02-15 17:39:32,298 - INFO - Updated GIS
+2025-02-15 17:39:34,282 - INFO - Updated GM
+2025-02-15 17:39:36,130 - INFO - Updated GPC
+2025-02-15 17:39:37,954 - INFO - Updated GILD
+2025-02-15 17:39:39,961 - INFO - Updated GPN
+2025-02-15 17:39:42,213 - INFO - Updated GL
+2025-02-15 17:39:44,212 - INFO - Updated GDDY
+2025-02-15 17:39:46,002 - INFO - Updated GS
+2025-02-15 17:39:48,123 - INFO - Updated HAL
+2025-02-15 17:39:49,923 - INFO - Updated HIG
+2025-02-15 17:39:51,766 - INFO - Updated HAS
+2025-02-15 17:39:54,019 - INFO - Updated HCA
+2025-02-15 17:41:24,085 - INFO - Connected to MongoDB
+2025-02-15 17:45:48,921 - INFO - Connected to MongoDB
+2025-02-15 17:46:07,127 - ERROR - Error in search: 'coroutine' object has no attribute 'companies'
+2025-02-15 17:48:40,451 - ERROR - Error in search: 'coroutine' object has no attribute 'companies'
+2025-02-15 17:54:04,810 - INFO - Connected to MongoDB
+2025-02-15 18:16:21,732 - INFO - Connected to MongoDB
+2025-02-15 18:16:21,978 - ERROR - Error fetching income statement for aapl: 404: Company aapl not found
+2025-02-15 18:18:49,659 - ERROR - Error fetching income statement for mmm: 404: Company mmm not found
+2025-02-15 18:18:56,730 - ERROR - Error fetching income statement for mmm: 404: Company mmm not found
+2025-02-15 18:19:13,969 - ERROR - Error fetching balance sheet for mmm: 404: Company mmm not found
+2025-02-15 18:24:00,344 - ERROR - Error fetching income statement for AAPL: 404: Company AAPL not found
+2025-02-15 18:26:03,974 - INFO - Connected to MongoDB
+2025-02-15 18:26:43,905 - ERROR - Error fetching balance sheet for aapl: 404: Company aapl not found
+2025-02-15 18:34:22,660 - INFO - Connected to MongoDB

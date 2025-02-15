@@ -1,5 +1,9 @@
 fastapi
 uvicorn
-pymongo
+pydantic
+motor
+pandas
 numpy
-python-multipart
+yfinance
+aiohttp
+python-dotenv
