@@ -8,6 +8,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from update_manager import UpdateManager
 from utils import clean_mongo_data
 import math
+import re
+from typing import List, Dict, Any, Optional
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
@@ -54,49 +56,158 @@ async def get_all_companies(db: AsyncIOMotorDatabase = Depends(get_database)):
     except Exception as e:
         logger.error(f"Error fetching companies: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 @app.get("/search")
 async def search_companies(
     query: str = Query(..., description="Search by ticker, name, or sector"),
     limit: int = Query(20, description="Number of results to return", ge=1, le=100),
     page: int = Query(1, description="Page number for pagination", ge=1),
     db: AsyncIOMotorDatabase = Depends(get_database)
-):
+) -> Dict[str, Any]:
     """
-    Search for companies by ticker symbol in the database.
-    Returns matching companies sorted by market cap.
+    Enhanced search for companies with improved ticker matching:
+    - Single letter queries focus exclusively on ticker matches
+    - Exact ticker matches appear first
+    - Prefix matches for tickers are prioritized
+    - Name and sector matches appear after ticker matches
+    
+    Returns paginated results sorted by relevance and market cap.
     """
     try:
-        # Ensure the query is properly formatted
-        search_query = {}
-        if query:
-            search_query["ticker"] = {"$regex": query.upper(), "$options": "i"}
+        skip = (page - 1) * limit
+        query = query.strip()
+        
+        # Build search pipeline
+        pipeline: List[Dict[str, Any]] = []
+        
+        # Different search logic based on query length
+        if len(query) == 1:
+            # Single letter - only search tickers
+            pipeline.extend([
+                {
+                    "$match": {
+                        "ticker": {"$regex": f"^{re.escape(query.upper())}"}
+                    }
+                }
+            ])
+        else:
+            # Multi-character search with prioritized matching
+            pipeline.extend([
+                {
+                    "$match": {
+                        "$or": [
+                            # Exact ticker match
+                            {"ticker": query.upper()},
+                            # Ticker starts with query
+                            {"ticker": {"$regex": f"^{re.escape(query.upper())}"}},
+                            # Ticker contains query
+                            {"ticker": {"$regex": f"{re.escape(query.upper())}", "$options": "i"}},
+                            # Name contains query
+                            {"name": {"$regex": f"{re.escape(query)}", "$options": "i"}},
+                            # Sector contains query
+                            {"sector": {"$regex": f"{re.escape(query)}", "$options": "i"}}
+                        ]
+                    }
+                },
+                {
+                    "$addFields": {
+                        "matchScore": {
+                            "$switch": {
+                                "branches": [
+                                    # Exact ticker match gets highest priority
+                                    {
+                                        "case": {"$eq": ["$ticker", query.upper()]},
+                                        "then": 5
+                                    },
+                                    # Ticker starts with query gets second priority
+                                    {
+                                        "case": {
+                                            "$regexMatch": {
+                                                "input": "$ticker",
+                                                "regex": f"^{re.escape(query.upper())}"
+                                            }
+                                        },
+                                        "then": 4
+                                    },
+                                    # Ticker contains query gets third priority
+                                    {
+                                        "case": {
+                                            "$regexMatch": {
+                                                "input": "$ticker",
+                                                "regex": f"{re.escape(query.upper())}",
+                                                "options": "i"
+                                            }
+                                        },
+                                        "then": 3
+                                    },
+                                    # Name matches get fourth priority
+                                    {
+                                        "case": {
+                                            "$regexMatch": {
+                                                "input": "$name",
+                                                "regex": f"{re.escape(query)}",
+                                                "options": "i"
+                                            }
+                                        },
+                                        "then": 2
+                                    },
+                                    # Sector matches get lowest priority
+                                    {
+                                        "case": {
+                                            "$regexMatch": {
+                                                "input": "$sector",
+                                                "regex": f"{re.escape(query)}",
+                                                "options": "i"
+                                            }
+                                        },
+                                        "then": 1
+                                    }
+                                ],
+                                "default": 0
+                            }
+                        }
+                    }
+                }
+            ])
 
-        projection = {
-            "_id": 0,
-            "ticker": 1,
-            "name": 1,
-            "sector": 1,
-            "industry": 1,
-            "market_cap": 1,
-            "exchange": 1,
-            "quote.price": 1,
-            "quote.change": 1,
-            "quote.changesPercentage": 1,
-            "quote.volume": 1
-        }
+        # Add sorting, projection, and pagination
+        pipeline.extend([
+            {
+                "$sort": {
+                    "matchScore": -1,
+                    "market_cap": -1
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "ticker": 1,
+                    "name": 1,
+                    "sector": 1,
+                    "industry": 1,
+                    "market_cap": 1,
+                    "market_cap_billions": {
+                        "$round": [{"$divide": ["$market_cap", 1000000000]}, 2]
+                    },
+                    "exchange": 1,
+                    "quote.price": 1,
+                    "quote.change": 1,
+                    "quote.changesPercentage": 1,
+                    "quote.volume": 1
+                }
+            },
+            {"$skip": skip},
+            {"$limit": limit}
+        ])
 
-        # Fetch data from MongoDB
-        cursor = db.companies.find(search_query, projection).sort("market_cap", -1).limit(limit)
-        results = await cursor.to_list(length=limit)  # Ensure to use `await` for async operations
-
-        # Format market cap
-        for company in results:
-            if company.get("market_cap"):
-                company["market_cap_billions"] = round(company["market_cap"] / 1_000_000_000, 2)
+        # Execute pipeline and get total count
+        results = await db.companies.aggregate(pipeline).to_list(length=limit)
+        total_count = await db.companies.count_documents({})
 
         return clean_mongo_data({
             "count": len(results),
+            "total": total_count,
+            "page": page,
+            "pages": -(-total_count // limit),  # Ceiling division
             "results": results
         })
 
@@ -329,5 +440,4 @@ import uvicorn
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 1000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -1852,3 +1852,4 @@
 2025-02-15 18:26:03,974 - INFO - Connected to MongoDB
 2025-02-15 18:26:43,905 - ERROR - Error fetching balance sheet for aapl: 404: Company aapl not found
 2025-02-15 18:34:22,660 - INFO - Connected to MongoDB
+2025-02-15 23:07:44,340 - INFO - Connected to MongoDB
