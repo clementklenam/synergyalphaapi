@@ -10,7 +10,11 @@ from utils import clean_mongo_data
 import math
 import re
 from typing import List, Dict, Any, Optional
+import screener
+
 # Set up logging
+
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -20,9 +24,10 @@ logging.basicConfig(
     ]
 )
 
-logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Stock Market Data API", description="API for accessing S&P 500 stock data")
+
+app.include_router(screener.router)
 
 # Add CORS middleware
 app.add_middleware(
@@ -34,7 +39,6 @@ app.add_middleware(
 )
 
  
-
 
 @app.get("/companies", response_model=List[dict])
 async def get_all_companies(db: AsyncIOMotorDatabase = Depends(get_database)):
@@ -432,7 +436,231 @@ async def get_cash_flow_statement(
 
     except Exception as e:
         logger.error(f"Error fetching cash flow statement for {ticker}: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error")\
+            
+@app.get("/companies/{ticker}/officers")
+async def get_company_officers(
+    ticker: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Get company officers and management team information"""
+    try:
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {
+                "officers": 1,
+                "ceo": 1,
+                "_id": 0
+            }
+        )
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+        return clean_mongo_data(company)
+    except Exception as e:
+        logger.error(f"Error fetching officers for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Add these endpoints to your existing FastAPI app
+
+@app.get("/companies/{ticker}/officers")
+async def get_company_officers(
+    ticker: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Get company officers and management team information"""
+    try:
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {
+                "officers": 1,
+                "ceo": 1,
+                "_id": 0
+            }
+        )
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+        return clean_mongo_data(company)
+    except Exception as e:
+        logger.error(f"Error fetching officers for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/companies/{ticker}/logo")
+async def get_company_logo(
+    ticker: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Get company logo as base64 encoded image"""
+    try:
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {"image": 1, "_id": 0}
+        )
+        if not company or "image" not in company:
+            raise HTTPException(status_code=404, detail=f"Logo for {ticker} not found")
+        return {"image": f"data:image/jpeg;base64,{company['image']}"}
+    except Exception as e:
+        logger.error(f"Error fetching logo for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/companies/compare")
+async def compare_companies(
+    tickers: List[str] = Query(..., description="List of tickers to compare"),
+    metrics: List[str] = Query(
+        ["price", "market_cap", "beta", "volume"],
+        description="Metrics to compare"
+    ),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Compare multiple companies across specified metrics"""
+    try:
+        # Convert tickers to uppercase
+        tickers = [ticker.upper() for ticker in tickers]
+        
+        # Fetch companies data
+        companies = await db.companies.find(
+            {"ticker": {"$in": tickers}},
+            {
+                "ticker": 1,
+                "name": 1,
+                "price": 1,
+                "market_cap": 1,
+                "beta": 1,
+                "volume": 1,
+                "sector": 1,
+                "industry": 1,
+                "_id": 0
+            }
+        ).to_list(length=None)
+        
+        if not companies:
+            raise HTTPException(status_code=404, detail="No companies found")
+            
+        return clean_mongo_data({
+            "metrics": metrics,
+            "companies": companies
+        })
+    except Exception as e:
+        logger.error(f"Error comparing companies: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/market-overview")
+async def get_market_overview(
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Get market overview with top gainers, losers, and most active stocks"""
+    try:
+        pipeline = [
+            {
+                "$project": {
+                    "ticker": 1,
+                    "name": 1,
+                    "price": 1,
+                    "changes": 1,
+                    "volume": 1,
+                    "market_cap": 1,
+                    "_id": 0
+                }
+            },
+            {
+                "$sort": {"changes": -1}
+            }
+        ]
+        
+        all_stocks = await db.companies.aggregate(pipeline).to_list(length=None)
+        
+        # Get top 10 gainers and losers
+        gainers = sorted(all_stocks, key=lambda x: x.get('changes', 0) or 0, reverse=True)[:10]
+        losers = sorted(all_stocks, key=lambda x: x.get('changes', 0) or 0)[:10]
+        
+        # Get most active by volume
+        most_active = sorted(all_stocks, key=lambda x: x.get('volume', 0) or 0, reverse=True)[:10]
+        
+        return clean_mongo_data({
+            "top_gainers": gainers,
+            "top_losers": losers,
+            "most_active": most_active
+        })
+    except Exception as e:
+        logger.error(f"Error fetching market overview: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/companies/{ticker}/key-stats")
+async def get_company_key_stats(
+    ticker: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Get key statistics and ratios for a company"""
+    try:
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {
+                "ticker": 1,
+                "name": 1,
+                "market_cap": 1,
+                "beta": 1,
+                "price_to_earnings": 1,
+                "price_to_book": 1,
+                "dividend_yield": 1,
+                "debt_to_equity": 1,
+                "current_ratio": 1,
+                "return_on_equity": 1,
+                "return_on_assets": 1,
+                "profit_margin": 1,
+                "_id": 0
+            }
+        )
+        
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+            
+        return clean_mongo_data(company)
+    except Exception as e:
+        logger.error(f"Error fetching key stats for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/companies/{ticker}/peers")
+async def get_company_peers(
+    ticker: str,
+    limit: int = Query(5, description="Number of peer companies to return"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Get peer companies in the same sector/industry"""
+    try:
+        # First get the company's sector and industry
+        company = await db.companies.find_one(
+            {"ticker": ticker.upper()},
+            {"sector": 1, "industry": 1, "market_cap": 1, "_id": 0}
+        )
+        
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+            
+        # Find peers in the same industry with similar market cap
+        peers = await db.companies.find(
+            {
+                "ticker": {"$ne": ticker.upper()},
+                "industry": company["industry"],
+                "sector": company["sector"]
+            },
+            {
+                "ticker": 1,
+                "name": 1,
+                "market_cap": 1,
+                "price": 1,
+                "changes": 1,
+                "_id": 0
+            }
+        ).sort([
+            ("market_cap", -1)
+        ]).limit(limit).to_list(length=None)
+        
+        return clean_mongo_data({
+            "company": company,
+            "peers": peers
+        })
+    except Exception as e:
+        logger.error(f"Error fetching peers for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
     
 import os
