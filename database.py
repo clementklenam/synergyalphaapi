@@ -2,6 +2,7 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 import logging
 from settings import settings
 from typing import Optional
+from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,32 @@ class MongoManager:
                 cls._db = None
                 raise
 
+
+# Add your new method here
+    @classmethod
+    async def update_company_data(cls, symbol: str, data: Dict[str, Any]) -> bool:
+        """
+        Update company data in the database
+        
+        Args:
+            symbol: Stock ticker symbol
+            data: Dictionary containing updated company data
+            
+        Returns:
+            bool: True if update was successful, False otherwise
+        """
+        try:
+            db = await cls.get_database()
+            result = await db.companies.update_one(
+                {"ticker": symbol},
+                {"$set": data},
+                upsert=True
+            )
+            logger.info(f"Updated {symbol} in database: matched={result.matched_count}, modified={result.modified_count}, upserted={result.upserted_id is not None}")
+            return True
+        except Exception as e:
+            logger.error(f"Error updating company data for {symbol}: {str(e)}")
+            return False
     @classmethod
     async def close_connections(cls) -> None:
         """Close database connections"""

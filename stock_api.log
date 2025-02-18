@@ -7180,3 +7180,16 @@ mktCap
 2025-02-18 20:45:04,057 - INFO - Automated update checks started - running every 300 seconds
 2025-02-18 20:45:38,780 - INFO - Shutting down the application...
 2025-02-18 20:47:38,026 - INFO - Automated update checks started - running every 300 seconds
+2025-02-18 21:37:29,188 - INFO - Automated update checks started - running every 300 seconds
+2025-02-18 21:38:54,743 - INFO - Processing updates for 503 symbols
+2025-02-18 21:38:59,804 - ERROR - 404 Client Error: Not Found for url: https://query2.finance.yahoo.com/v10/finance/quoteSummary/MMM?modules=financialData%2CquoteType%2CdefaultKeyStatistics%2CassetProfile%2CsummaryDetail&corsDomain=finance.yahoo.com&formatted=false&symbol=MMM&crumb=Too+Many+Requests%0D%0A
+2025-02-18 21:39:02,132 - ERROR - Error getting Yahoo Finance data for MMM: Expecting value: line 1 column 1 (char 0)
+2025-02-18 21:39:04,479 - ERROR - 404 Client Error: Not Found for url: https://query2.finance.yahoo.com/v10/finance/quoteSummary/AOS?modules=financialData%2CquoteType%2CdefaultKeyStatistics%2CassetProfile%2CsummaryDetail&corsDomain=finance.yahoo.com&formatted=false&symbol=AOS&crumb=Too+Many+Requests%0D%0A
+2025-02-18 21:39:06,512 - ERROR - Error getting Yahoo Finance data for AOS: Expecting value: line 1 column 1 (char 0)
+2025-02-18 21:39:08,883 - ERROR - 404 Client Error: Not Found for url: https://query2.finance.yahoo.com/v10/finance/quoteSummary/ABT?modules=financialData%2CquoteType%2CdefaultKeyStatistics%2CassetProfile%2CsummaryDetail&corsDomain=finance.yahoo.com&formatted=false&symbol=ABT&crumb=Too+Many+Requests%0D%0A
+2025-02-18 21:39:10,930 - ERROR - Error getting Yahoo Finance data for ABT: Expecting value: line 1 column 1 (char 0)
+2025-02-18 21:39:13,171 - ERROR - 404 Client Error: Not Found for url: https://query2.finance.yahoo.com/v10/finance/quoteSummary/ABBV?modules=financialData%2CquoteType%2CdefaultKeyStatistics%2CassetProfile%2CsummaryDetail&corsDomain=finance.yahoo.com&formatted=false&symbol=ABBV&crumb=Too+Many+Requests%0D%0A
+2025-02-18 21:39:14,956 - ERROR - Error getting Yahoo Finance data for ABBV: Expecting value: line 1 column 1 (char 0)
+2025-02-18 21:39:17,171 - ERROR - 404 Client Error: Not Found for url: https://query2.finance.yahoo.com/v10/finance/quoteSummary/ACN?modules=financialData%2CquoteType%2CdefaultKeyStatistics%2CassetProfile%2CsummaryDetail&corsDomain=finance.yahoo.com&formatted=false&symbol=ACN&crumb=Too+Many+Requests%0D%0A
+2025-02-18 21:39:18,903 - ERROR - Error getting Yahoo Finance data for ACN: Expecting value: line 1 column 1 (char 0)
+2025-02-18 21:55:49,280 - INFO - Automated update checks started - running every 300 seconds

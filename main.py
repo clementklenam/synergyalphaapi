@@ -239,11 +239,11 @@ async def search_companies(
 async def get_update_status():
     """Get the current status of data updates"""
     next_update_time = None
-    if UpdateManager._last_update:
-        next_update_time = UpdateManager._last_update + timedelta(seconds=Settings.UPDATE_INTERVAL)
+    if UpdateManager._last_check:
+        next_update_time = UpdateManager._last_check + timedelta(seconds=Settings.UPDATE_INTERVAL)
     
     return {
-        "last_update": UpdateManager._last_update,
+        "last_update": UpdateManager._last_check,
         "next_update": next_update_time,
         "is_updating": UpdateManager._is_updating,
         "update_interval": f"{Settings.UPDATE_INTERVAL} seconds ({Settings.UPDATE_INTERVAL / 60} minutes)"
@@ -254,14 +254,14 @@ async def get_update_status():
 async def trigger_update(background_tasks: BackgroundTasks):
     background_tasks.add_task(UpdateManager.start_updates)
     return {"message": "Background update process started"}
-@app.post("/updates/trigger")
-async def trigger_update(background_tasks: BackgroundTasks):
-    """Manually trigger a data update"""
-    if UpdateManager._is_updating:
-        raise HTTPException(status_code=400, detail="Update already in progress")
+# @app.post("/updates/trigger")
+# async def trigger_update(background_tasks: BackgroundTasks):
+#     """Manually trigger a data update"""
+#     if UpdateManager._is_updating:
+#         raise HTTPException(status_code=400, detail="Update already in progress")
     
-    background_tasks.add_task(UpdateManager.update_stock_data)
-    return {"message": "Update triggered", "timestamp": datetime.now()}
+#     background_tasks.add_task(UpdateManager.update_stock_data)
+#     return {"message": "Update triggered", "timestamp": datetime.now()}
 
 @app.get("/symbols")
 async def get_symbols(db: AsyncIOMotorDatabase = Depends(get_database)):
