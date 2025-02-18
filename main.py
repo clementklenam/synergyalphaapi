@@ -11,9 +11,14 @@ import math
 import re
 from typing import List, Dict, Any, Optional
 import screener
+<<<<<<< HEAD
 from datetime import timedelta
 
 # Set up logging
+=======
+from datetime import timedelta, datetime
+from config import Settings
+>>>>>>> db45b6f (update to update data every 15 minute)
 
 
 logging.basicConfig(
@@ -24,6 +29,8 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+
+logger = logging.getLogger(__name__)
 
 
 app = FastAPI(title="Stock Market Data API", description="API for accessing S&P 500 stock data")
@@ -38,6 +45,29 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Starting up the application...")
+    logger.info(f"Database will update every {Settings.UPDATE_INTERVAL} seconds")
+    
+    # Initialize the database connection
+    await MongoManager.get_database()
+    
+    # Start the automatic update process
+    await UpdateManager.start_updates()
+    logger.info("Automatic updates initialized")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    logger.info("Shutting down the application...")
+    
+    # Stop the automatic update process
+    await UpdateManager.stop_updates()
+    
+    # Close database connections
+    await MongoManager.close_connections()
 
  
 
@@ -222,14 +252,15 @@ async def search_companies(
 @app.get("/updates/status")
 async def get_update_status():
     """Get the current status of data updates"""
+    next_update_time = None
+    if UpdateManager._last_update:
+        next_update_time = UpdateManager._last_update + timedelta(seconds=Settings.UPDATE_INTERVAL)
+    
     return {
         "last_update": UpdateManager._last_update,
-        "next_update": (
-            UpdateManager._last_update + timedelta(seconds=settings.UPDATE_INTERVAL)
-            if UpdateManager._last_update
-            else None
-        ),
-        "is_updating": UpdateManager._is_updating
+        "next_update": next_update_time,
+        "is_updating": UpdateManager._is_updating,
+        "update_interval": f"{Settings.UPDATE_INTERVAL} seconds ({Settings.UPDATE_INTERVAL / 60} minutes)"
     }
 
 @app.post("/updates/trigger")
@@ -239,7 +270,7 @@ async def trigger_update(background_tasks: BackgroundTasks):
         raise HTTPException(status_code=400, detail="Update already in progress")
     
     background_tasks.add_task(UpdateManager.update_stock_data)
-    return {"message": "Update triggered"}
+    return {"message": "Update triggered", "timestamp": datetime.now()}
 
 @app.get("/symbols")
 async def get_symbols(db: AsyncIOMotorDatabase = Depends(get_database)):

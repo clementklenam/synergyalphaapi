@@ -7,4 +7,7 @@ class Settings:
     LOG_LEVEL = logging.INFO
     LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
     UPDATE_INTERVAL = 3600  # 1 hour in seconds
-    FMP_API_KEY = "2BZ4GCJ340NBnmb5v09MJbXBAIjhIHOP"
+    FMP_API_KEY = "kP8vRt8RSXMr8BHEsk1iT23zzm8Mrf7m"
+    FINNHUB_API_KEY: str = "cpdoi4hr01qh24fljfigcpdoi4hr01qh24fljfj0"
+    LOGO_API_TOKEN: str = "pk_Wh0bWpJsTpWNjoJeNcw_Cw"
+    
