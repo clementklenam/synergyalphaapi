@@ -1,33 +1,94 @@
 import asyncio
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import yfinance as yf
 import pandas as pd
 import aiohttp
-from datetime import datetime
-from config import Settings
+from datetime import datetime, time, timedelta
+from pydantic import BaseModel
+import base64
+import json
+import pytz
+from settings import Settings, settings
 from database import MongoManager
 from utils import clean_mongo_data
-import base64 
 
 logger = logging.getLogger(__name__)
 
+class StockData(BaseModel):
+    ticker: str
+    price: Optional[float] = None
+    beta: Optional[float] = None
+    volAvg: Optional[int] = None
+    mktCap: Optional[int] = None
+    lastDiv: Optional[float] = None
+    range: Optional[str] = None
+    changes: Optional[float] = None
+    companyName: Optional[str] = None
+    currency: Optional[str] = None
+    cusip: Optional[str] = None
+    exchange: Optional[str] = None
+    industry: Optional[str] = None
+    website: Optional[str] = None
+    description: Optional[str] = None
+    sector: Optional[str] = None
+    country: Optional[str] = None
+    fullTimeEmployees: Optional[int] = None
+    ceo: Optional[str] = None
+    officers: Optional[List[Dict[str, Any]]] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zip: Optional[str] = None
+    image: Optional[str] = None
+    quote: Optional[Dict[str, Any]] = None
+    key_metrics: Optional[Dict[str, Any]] = None
+    ttm_ratios: Optional[Dict[str, Any]] = None
+    financial_statements: Optional[Dict[str, Any]] = None
+    last_updated: Optional[datetime] = None
+    market_status: Optional[str] = None
+    financial_data_hash: Optional[str] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
+
+
+class MarketStatus:
+    CLOSED = "closed"
+    OPEN = "open"
+    PRE_MARKET = "pre_market"
+    AFTER_HOURS = "after_hours"
+
+
 class UpdateManager:
     _update_task: Optional[asyncio.Task] = None
-    _last_update: Optional[datetime] = None
+    _last_check: Optional[datetime] = None
     _is_updating: bool = False
+    _market_status: str = MarketStatus.CLOSED
+    _force_refresh_symbols: List[str] = []
     logger = logging.getLogger(__name__)
 
     @classmethod
     async def start_updates(cls):
-        """Start the automatic update process"""
+        """Start the automatic update check process"""
         if cls._update_task is None:
             cls._update_task = asyncio.create_task(cls._update_loop())
-            cls.logger.info("Automated updates started - running every %d seconds", Settings.UPDATE_INTERVAL)
+            cls.logger.info("Automated update checks started - running every %d seconds", Settings.CHECK_INTERVAL)
+            
+    @classmethod
+    async def update_stock_data(cls, symbols=None):
+        """Update stock data for specified symbols or all SP500 symbols"""
+        try:
+            if symbols is None:
+                symbols = await cls._get_sp500_symbols()
+            await cls._process_updates(symbols)
+        except Exception as e:
+            cls.logger.error(f"Error updating stock data: {str(e)}")
 
     @classmethod
     async def stop_updates(cls):
-        """Stop the automatic update process"""
+        """Stop the automatic update check process"""
         if cls._update_task:
             cls._update_task.cancel()
             try:
@@ -35,57 +96,310 @@ class UpdateManager:
             except asyncio.CancelledError:
                 pass
             cls._update_task = None
-            cls.logger.info("Automated updates stopped")
+            cls.logger.info("Automated update checks stopped")
 
     @classmethod
+    async def force_update(cls, symbols: List[str]):
+        """Force update for specific symbols, bypassing checking"""
+        cls._force_refresh_symbols.extend(symbols)
+        cls.logger.info(f"Scheduled forced update for symbols: {symbols}")
+    
+    @classmethod
     async def _update_loop(cls):
-        """Main update loop that runs continuously"""
-        while True:
+        """Main update loop that runs continuously, checking for new data"""
+        WHILE_TRUE = asyncio.events.Event()  # To keep the loop running
+        await WHILE_TRUE.set()
+
+        while await WHILE_TRUE.wait():
             try:
-                if not cls._is_updating:
-                    cls.logger.info("Starting scheduled update")
-                    await cls.update_stock_data()
+                # Update market status at the beginning of each loop
+                cls._market_status = await cls._get_current_market_status()
+                cls.logger.info(f"Current market status: {cls._market_status}")
+                
+                # If we have forced update symbols, process them immediately
+                if cls._force_refresh_symbols:
+                    forced_symbols = cls._force_refresh_symbols.copy()
+                    cls._force_refresh_symbols = []
+                    cls.logger.info(f"Processing forced update for {len(forced_symbols)} symbols")
+                    await cls._process_updates(forced_symbols)
+                    
+                # Check for new data based on current market status
+                symbols_needing_update = []
+                async with aiohttp.ClientSession() as session:
+                    all_symbols = await cls._get_sp500_symbols()
+                    
+                    # Get DB connection once for the batch
+                    db = await MongoManager.get_database()
+                    
+                    for symbol in all_symbols:
+                        db_data = await cls._get_company_data(symbol, db)
+                        has_updates = await cls._check_symbol_for_updates(symbol, db_data, session)
+                        if has_updates:
+                            symbols_needing_update.append(symbol)
+                
+                if symbols_needing_update:
+                    cls.logger.info(f"Found {len(symbols_needing_update)} symbols with new data")
+                    await cls._process_updates(symbols_needing_update)
                 else:
-                    cls.logger.info("Update already in progress, skipping this cycle")
+                    cls.logger.info("No new data available, skipping update")
+
+                # Update last check time
+                cls._last_check = datetime.now()
                 
-                # Log when the next update will happen
-                next_update = datetime.now().timestamp() + Settings.UPDATE_INTERVAL
-                cls.logger.info(f"Next update scheduled at: {datetime.fromtimestamp(next_update).strftime('%Y-%m-%d %H:%M:%S')}")
-                
-                await asyncio.sleep(Settings.UPDATE_INTERVAL)
+                # Adjust sleep interval based on market status
+                sleep_interval = cls._get_adjusted_interval()
+                next_check = datetime.now() + timedelta(seconds=sleep_interval)
+                cls.logger.info(f"Next data check scheduled at: {next_check.strftime('%Y-%m-%d %H:%M:%S')}")
+                await asyncio.sleep(sleep_interval)
+
             except Exception as e:
                 cls.logger.error(f"Error in update loop: {str(e)}")
-                await asyncio.sleep(60)  # Wait 1 minute before retrying if there's an error
+                await asyncio.sleep(60)  # Wait 1 minute before retrying
 
+    @classmethod
+    async def _process_updates(cls, symbols: List[str]):
+        """Process updates for a list of symbols"""
+        if cls._is_updating:
+            cls.logger.warning("Update already in progress, queuing symbols for next run")
+            cls._force_refresh_symbols.extend(symbols)
+            return
+        
+        cls._is_updating = True
+        try:
+            cls.logger.info(f"Processing updates for {len(symbols)} symbols")
+            async with aiohttp.ClientSession() as session:
+                tasks = []
+                for symbol in symbols:
+                    tasks.append(cls.process_single_stock(symbol, session))
+                
+                # Process in batches to avoid overwhelming APIs
+                batch_size = 10
+                for i in range(0, len(tasks), batch_size):
+                    batch_tasks = tasks[i:i+batch_size]
+                    results = await asyncio.gather(*batch_tasks, return_exceptions=True)
+                    
+                    # Store successful results in database
+                    for symbol, result in zip(symbols[i:i+batch_size], results):
+                        if isinstance(result, Exception):
+                            cls.logger.error(f"Failed to update {symbol}: {str(result)}")
+                        elif result:
+                            # Update the database
+                            await MongoManager.update_company_data(symbol, result)
+                            cls.logger.info(f"Successfully updated {symbol}")
+                        else:
+                            cls.logger.warning(f"No data returned for {symbol}")
+                    
+                    # Rate limiting
+                    await asyncio.sleep(2)
+                
+                cls.logger.info(f"Completed updates for {len(symbols)} symbols")
+        
+        except Exception as e:
+            cls.logger.error(f"Error processing updates: {str(e)}")
+        finally:
+            cls._is_updating = False
 
+    @classmethod
+    async def _check_symbol_for_updates(cls, symbol: str, db_data: Optional[Dict], session: aiohttp.ClientSession) -> bool:
+        """Check if a symbol has new data available from any source"""
+        try:
+            # Handle case where symbol doesn't exist in DB
+            if not db_data:
+                return True
+            
+            # Get latest data timestamp from DB
+            db_timestamp = db_data.get('last_updated')
+            if not db_timestamp:
+                return True
+            
+            if isinstance(db_timestamp, str):
+                db_timestamp = datetime.fromisoformat(db_timestamp.replace('Z', '+00:00'))
+            
+            # Determine time-based update strategy based on market status
+            time_since_update = (datetime.now() - db_timestamp).total_seconds()
+            
+            # Update strategy based on market status
+            if cls._market_status == MarketStatus.CLOSED:
+                # During closed market, update once per day (86400 seconds)
+                if time_since_update < 86400 and db_data.get('market_status') == MarketStatus.CLOSED:
+                    return False
+            elif cls._market_status == MarketStatus.PRE_MARKET:
+                # During pre-market, update more frequently (every 15 minutes)
+                if time_since_update < 900:
+                    return False
+            elif cls._market_status == MarketStatus.OPEN:
+                # During open market, check for price and volume changes
+                if time_since_update < 300:  # At least 5 minutes between checks
+                    return False
+                
+                # Check for price changes from Yahoo Finance
+                try:
+                    ticker = yf.Ticker(symbol)
+                    latest_data = ticker.history(period="1d", interval="1m", prepost=True)
+                    if not latest_data.empty:
+                        latest_price = latest_data['Close'].iloc[-1]
+                        latest_volume = latest_data['Volume'].iloc[-1]
+                        db_price = db_data.get('price', 0)
+                        db_volume = db_data.get('quote', {}).get('volume', 0)
+                        
+                        # Update if price changed by more than 0.1% or volume increased by 5%
+                        if (abs((latest_price - db_price) / db_price) > 0.001 or
+                            (latest_volume > db_volume * 1.05)):
+                            cls.logger.info(f"{symbol} has significant price/volume change")
+                            return True
+                except Exception as e:
+                    cls.logger.warning(f"Error checking Yahoo Finance data for {symbol}: {str(e)}")
+            
+            elif cls._market_status == MarketStatus.AFTER_HOURS:
+                # During after-hours, update less frequently (every 30 minutes)
+                if time_since_update < 1800:
+                    return False
+            
+            # Check for financial statement updates by comparing hashes
+            try:
+                ticker = yf.Ticker(symbol)
+                
+                # Get current financial statements
+                financial_data = {
+                    "income_statement": {
+                        "annual": clean_mongo_data(ticker.income_stmt.to_dict()),
+                        "quarterly": clean_mongo_data(ticker.quarterly_income_stmt.to_dict())
+                    },
+                    "balance_sheet": {
+                        "annual": clean_mongo_data(ticker.balance_sheet.to_dict()),
+                        "quarterly": clean_mongo_data(ticker.quarterly_balance_sheet.to_dict())
+                    },
+                    "cash_flow_statement": {
+                        "annual": clean_mongo_data(ticker.cashflow.to_dict()),
+                        "quarterly": clean_mongo_data(ticker.quarterly_cashflow.to_dict())
+                    }
+                }
+                
+                # Generate a hash from the financial data
+                financial_data_str = json.dumps(financial_data, sort_keys=True)
+                financial_data_hash = base64.b64encode(financial_data_str.encode()).decode()
+                
+                # Compare with stored hash
+                if financial_data_hash != db_data.get('financial_data_hash'):
+                    cls.logger.info(f"{symbol} has new financial statement data")
+                    return True
+                    
+            except Exception as e:
+                cls.logger.warning(f"Error checking financial data for {symbol}: {str(e)}")
+            
+            # Check if market status changed
+            if db_data.get('market_status') != cls._market_status:
+                cls.logger.info(f"{symbol} market status changed from {db_data.get('market_status')} to {cls._market_status}")
+                return True
+            
+            # Check logo
+            if not db_data.get('image'):
+                cls.logger.info(f"{symbol} needs logo")
+                return True
+                
+            return False
+            
+        except Exception as e:
+            cls.logger.error(f"Error checking updates for {symbol}: {str(e)}")
+            # Default to return True to be safe
+            return True
+
+    @classmethod
+    async def _get_current_market_status(cls) -> str:
+        """
+        Check current market status: pre-market, open, after-hours, or closed
+        """
+        try:
+            # Get current time in US Eastern timezone
+            eastern = pytz.timezone('US/Eastern')
+            now = datetime.now(eastern)
+            current_time = now.time()
+            current_day = now.weekday()
+            
+            # Check if it's a weekend
+            if current_day >= 5:  # Saturday or Sunday
+                return MarketStatus.CLOSED
+                
+            # Regular market hours: 9:30 AM - 4:00 PM ET, Monday-Friday
+            market_open = time(9, 30, 0)
+            market_close = time(16, 0, 0)
+            
+            # Pre-market hours: 4:00 AM - 9:30 AM ET
+            pre_market_open = time(4, 0, 0)
+            
+            # After-hours: 4:00 PM - 8:00 PM ET
+            after_hours_close = time(20, 0, 0)
+            
+            if pre_market_open <= current_time < market_open:
+                return MarketStatus.PRE_MARKET
+            elif market_open <= current_time < market_close:
+                return MarketStatus.OPEN
+            elif market_close <= current_time < after_hours_close:
+                return MarketStatus.AFTER_HOURS
+            else:
+                return MarketStatus.CLOSED
+                
+        except Exception as e:
+            cls.logger.error(f"Error determining market status: {str(e)}")
+            return MarketStatus.CLOSED
+    
+    @classmethod
+    def _get_adjusted_interval(cls) -> int:
+        """Get adjusted check interval based on market status"""
+        if cls._market_status == MarketStatus.OPEN:
+            return Settings.CHECK_INTERVAL  # Default interval during market hours
+        elif cls._market_status == MarketStatus.PRE_MARKET:
+            return Settings.CHECK_INTERVAL * 2  # Check less frequently during pre-market
+        elif cls._market_status == MarketStatus.AFTER_HOURS:
+            return Settings.CHECK_INTERVAL * 3  # Check even less frequently after hours
+        else:  # CLOSED
+            return Settings.CHECK_INTERVAL * 6  # Check much less frequently when market closed
+    
     @classmethod
     async def _get_sp500_symbols(cls):
         """Fetch S&P 500 symbols asynchronously"""
         try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies') as response:
+                    if response.status == 200:
+                        html = await response.text()
+                        df = pd.read_html(html)[0]
+                        return df['Symbol'].tolist()
+            # Fallback to direct pandas if aiohttp fails
             df = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
             return df['Symbol'].tolist()
         except Exception as e:
             cls.logger.error(f"Error fetching S&P 500 symbols: {str(e)}")
             return []
-        
+
+    @classmethod
+    async def _get_company_data(cls, symbol: str, db) -> Optional[Dict]:
+        """Get existing company data from database"""
+        try:
+            data = await db.companies.find_one({"ticker": symbol})
+            return data
+        except Exception as e:
+            cls.logger.error(f"Error getting company data for {symbol}: {str(e)}")
+            return None
+
     @classmethod
     async def get_stock_logo(cls, symbol: str, session: aiohttp.ClientSession) -> Optional[str]:
         """Fetches the stock logo using logo.dev API"""
         try:
-            url = f"https://img.logo.dev/ticker/{symbol.lower()}?token={Settings.LOGO_API_TOKEN}"
+            url = f"https://img.logo.dev/ticker/{symbol.lower()}?token={settings.LOGO_API_TOKEN}"
             async with session.get(url, timeout=5) as response:
                 if response.status == 200:
                     content = await response.read()
                     return base64.b64encode(content).decode('utf-8')
-                logger.warning(f"Failed to fetch logo for {symbol} - Status code: {response.status}")
+                cls.logger.warning(f"Failed to fetch logo for {symbol} - Status code: {response.status}")
                 return None
         except Exception as e:
-            logger.error(f"Error fetching logo for {symbol}: {str(e)}")
+            cls.logger.error(f"Error fetching logo for {symbol}: {str(e)}")
             return None
-    
+
     @classmethod
     async def _get_yf_data(cls, symbol: str) -> Optional[Dict[str, Any]]:
-        """Fetch all other data from Yahoo Finance"""
+        """Fetch all other data from Yahoo Finance including financial statements"""
         try:
             stock = yf.Ticker(symbol)
             info = stock.info
@@ -111,6 +425,26 @@ class UpdateManager:
                         'chiefexecutive'
                     ]:
                         info['ceo'] = officer.get('name')
+            
+            # Get financial statements
+            financial_statements = {
+                "income_statement": {
+                    "annual": clean_mongo_data(stock.income_stmt.to_dict()),
+                    "quarterly": clean_mongo_data(stock.quarterly_income_stmt.to_dict())
+                },
+                "balance_sheet": {
+                    "annual": clean_mongo_data(stock.balance_sheet.to_dict()),
+                    "quarterly": clean_mongo_data(stock.quarterly_balance_sheet.to_dict())
+                },
+                "cash_flow_statement": {
+                    "annual": clean_mongo_data(stock.cashflow.to_dict()),
+                    "quarterly": clean_mongo_data(stock.quarterly_cashflow.to_dict())
+                }
+            }
+            
+            # Generate a hash from the financial data for future comparison
+            financial_data_str = json.dumps(financial_statements, sort_keys=True)
+            financial_data_hash = base64.b64encode(financial_data_str.encode()).decode()
             
             return {
                 "ticker": symbol,
@@ -138,6 +472,9 @@ class UpdateManager:
                 "zip": info.get('zip'),
                 "ceo": info.get('ceo'),
                 "officers": officers_data,
+                "financial_statements": financial_statements,
+                "financial_data_hash": financial_data_hash,
+                "market_status": cls._market_status,
                 "quote": {
                     "price": info.get('currentPrice'),
                     "change": info.get('regularMarketChange'),
@@ -172,17 +509,17 @@ class UpdateManager:
                 }
             }
         except Exception as e:
-            logger.error(f"Error getting Yahoo Finance data for {symbol}: {str(e)}")
+            cls.logger.error(f"Error getting Yahoo Finance data for {symbol}: {str(e)}")
             return None
-        
+    
     @classmethod
     async def get_finnhub_data(cls, symbol: str, session: aiohttp.ClientSession) -> Optional[Dict[str, Any]]:
         """Fetches data from Finnhub API"""
         try:
             # Company Profile
-            profile_url = f"https://finnhub.io/api/v1/stock/profile2?symbol={symbol}&token={Settings.FINNHUB_API_KEY}"
-            quote_url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={Settings.FINNHUB_API_KEY}"
-            metrics_url = f"https://finnhub.io/api/v1/stock/metric?symbol={symbol}&metric=all&token={Settings.FINNHUB_API_KEY}"
+            profile_url = f"https://finnhub.io/api/v1/stock/profile2?symbol={symbol}&token={settings.FINNHUB_API_KEY}"
+            quote_url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={settings.FINNHUB_API_KEY}"
+            metrics_url = f"https://finnhub.io/api/v1/stock/metric?symbol={symbol}&metric=all&token={settings.FINNHUB_API_KEY}"
             
             # Fetch data concurrently
             async with session.get(profile_url) as profile_response, \
@@ -219,10 +556,10 @@ class UpdateManager:
                             "state": profile_data.get('state'),
                             "zip": profile_data.get('zip')
                         }
-            logger.warning(f"Failed to fetch complete Finnhub data for {symbol}")
+            cls.logger.warning(f"Failed to fetch complete Finnhub data for {symbol}")
             return None
         except Exception as e:
-            logger.error(f"Error fetching Finnhub data for {symbol}: {str(e)}")
+            cls.logger.error(f"Error fetching Finnhub data for {symbol}: {str(e)}")
             return None
 
     @classmethod
@@ -282,139 +619,23 @@ class UpdateManager:
                 "quote": yf_info.get('quote', {}),
                 "key_metrics": yf_info.get('key_metrics', {}),
                 "ttm_ratios": yf_info.get('ttm_ratios', {}),
+                "financial_statements": yf_info.get('financial_statements', {}),
+                "financial_data_hash": yf_info.get('financial_data_hash'),
+                "market_status": cls._market_status,
                 "last_updated": datetime.now()
             }
             
             # Remove None values to keep data clean
             combined_data = {k: v for k, v in combined_data.items() if v is not None}
             
-            return combined_data if len(combined_data) > 5 else None
+            # Validate data using Pydantic model
+            try:
+                validated_data = StockData(**combined_data).dict(exclude_none=True)
+                return validated_data if len(validated_data) > 5 else None
+            except Exception as e:
+                cls.logger.error(f"Data validation error for {symbol}: {str(e)}")
+                return combined_data if len(combined_data) > 5 else None
                 
         except Exception as e:
-            logger.error(f"Error processing {symbol}: {str(e)}")
-            return None
-           
-    @classmethod
-    async def update_stock_data(cls):
-        """Update stock data for all S&P 500 companies"""
-        if cls._is_updating:
-            cls.logger.warning("Update already in progress, skipping this request")
-            return
-
-        cls._is_updating = True
-        update_start_time = datetime.now()
-        try:
-            # Get S&P 500 symbols
-            symbols = await cls._get_sp500_symbols()
-            
-            # For testing with shorter update times, you might want to limit the companies
-            # Uncomment the next line to use only the first 50 companies for testing
-            # symbols = symbols[:50]
-            
-            cls.logger.info(f"Starting update for {len(symbols)} companies")
-
-            # Get database connection
-            db = await MongoManager.get_database()
-
-            # Update each company
-            async with aiohttp.ClientSession() as session:
-                # For testing, add a counter to track progress
-                updated_count = 0
-                
-                for symbol in symbols:
-                    try:
-                        data = await cls.process_single_stock(symbol, session)
-                        if data:
-                            await db.companies.update_one(
-                                {"ticker": data["ticker"]},
-                                {"$set": data},
-                                upsert=True
-                            )
-                            updated_count += 1
-                            if updated_count % 10 == 0:  # Log every 10 companies
-                                cls.logger.info(f"Updated {updated_count}/{len(symbols)} companies")
-                        else:
-                            cls.logger.warning(f"No data returned for {symbol}")
-                        
-                        # Rate limiting - be nice to the APIs
-                        await asyncio.sleep(0.5)
-                        
-                    except Exception as e:
-                        cls.logger.error(f"Error updating {symbol}: {str(e)}")
-
-            update_duration = (datetime.now() - update_start_time).total_seconds()
-            cls._last_update = datetime.now()
-            cls.logger.info(f"Stock data update completed in {update_duration:.2f} seconds. Updated {updated_count} companies.")
-
-        except Exception as e:
-            cls.logger.error(f"Error in update process: {str(e)}")
-        finally:
-            cls._is_updating = False
-
-    @classmethod
-    async def _fetch_stock_data(cls, ticker: str, session: aiohttp.ClientSession):
-        """Fetch stock data for a single company"""
-        try:
-            # Use yfinance for all data
-            stock = yf.Ticker(ticker)
-            info = stock.info
-
-            # Combine data
-            data = {
-                "ticker": ticker,
-                "name": info.get('longName', ''),
-                "sector": info.get('sector', ''),
-                "industry": info.get('industry', ''),
-                "market_cap": info.get('marketCap', 0),
-                "exchange": info.get('exchange', ''),
-                "country": info.get('country', ''),
-                "currency": info.get('currency', 'USD'),
-                
-                # Quote data
-                "quote": {
-                    "price": info.get('currentPrice', 0),
-                    "change": info.get('regularMarketChange', 0),
-                    "changesPercentage": info.get('regularMarketChangePercent', 0),
-                    "volume": info.get('volume', 0),
-                    "avgVolume": info.get('averageVolume', 0),
-                    "previousClose": info.get('previousClose', 0),
-                    "dayLow": info.get('dayLow', 0),
-                    "dayHigh": info.get('dayHigh', 0),
-                    "yearLow": info.get('fiftyTwoWeekLow', 0),
-                    "yearHigh": info.get('fiftyTwoWeekHigh', 0),
-                    "marketCap": info.get('marketCap', 0),
-                    "timestamp": datetime.now().isoformat()
-                },
-
-                # Key metrics
-                "key_metrics": {
-                    "pe_ratio": info.get('trailingPE', 0),
-                    "forward_pe": info.get('forwardPE', 0),
-                    "peg_ratio": info.get('pegRatio', 0),
-                    "price_to_book": info.get('priceToBook', 0),
-                    "price_to_sales": info.get('priceToSalesTrailing12Months', 0),
-                    "beta": info.get('beta', 0),
-                    "dividend_rate": info.get('dividendRate', 0),
-                    "dividend_yield": info.get('dividendYield', 0) if info.get('dividendYield') else 0,
-                },
-
-                # Financial ratios (TTM)
-                "ttm_ratios": {
-                    "profit_margin": info.get('profitMargins', 0),
-                    "operating_margin": info.get('operatingMargins', 0),
-                    "roa": info.get('returnOnAssets', 0),
-                    "roe": info.get('returnOnEquity', 0),
-                    "revenue_growth": info.get('revenueGrowth', 0),
-                    "earnings_growth": info.get('earningsGrowth', 0),
-                },
-
-                # Update timestamp
-                "last_updated": datetime.now().isoformat()
-            }
-
-            # Clean any NaN or infinite values
-            return clean_mongo_data(data)
-
-        except Exception as e:
-            cls.logger.error(f"Error fetching data for {ticker}: {str(e)}")
+            cls.logger.error(f"Error processing {symbol}: {str(e)}")
             return None

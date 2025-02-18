@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 import logging
 import os
+from pydantic import BaseModel
 from database import MongoManager, get_database
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from update_manager import UpdateManager
@@ -18,7 +19,11 @@ from datetime import timedelta
 =======
 from datetime import timedelta, datetime
 from config import Settings
+<<<<<<< HEAD
 >>>>>>> db45b6f (update to update data every 15 minute)
+=======
+from settings import Settings
+>>>>>>> ec28a2c (implement stock data updating systems)
 
 
 logging.basicConfig(
@@ -35,6 +40,9 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Stock Market Data API", description="API for accessing S&P 500 stock data")
 
+
+
+
 app.include_router(screener.router)
 
 # Add CORS middleware
@@ -47,30 +55,28 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Starting up the application...")
-    logger.info(f"Database will update every {Settings.UPDATE_INTERVAL} seconds")
-    
-    # Initialize the database connection
-    await MongoManager.get_database()
-    
-    # Start the automatic update process
+
+@app.router.lifespan_context
+async def lifespan(app):
+    # Start the update loop when the application starts
     await UpdateManager.start_updates()
-    logger.info("Automatic updates initialized")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Shutting down the application...")
-    
-    # Stop the automatic update process
+    yield
+    # Stop the update loop when the application shuts down
     await UpdateManager.stop_updates()
-    
-    # Close database connections
-    await MongoManager.close_connections()
-
  
-
+@app.get("/updates/status")
+async def get_update_status():
+    """Get the current status of data updates"""
+    next_update_time = None
+    if UpdateManager._last_check:  # Change start_updates to _last_check
+        next_update_time = UpdateManager._last_check + timedelta(seconds=Settings.CHECK_INTERVAL)
+    
+    return {
+        "last_update": UpdateManager._last_check,  # Change start_updates to _last_check
+        "next_update": next_update_time,
+        "is_updating": UpdateManager._is_updating,
+        "update_interval": f"{Settings.CHECK_INTERVAL} seconds ({Settings.CHECK_INTERVAL / 60} minutes)"
+    }
 @app.get("/companies", response_model=List[dict])
 async def get_all_companies(db: AsyncIOMotorDatabase = Depends(get_database)):
     """Get basic information for all companies"""
@@ -263,6 +269,11 @@ async def get_update_status():
         "update_interval": f"{Settings.UPDATE_INTERVAL} seconds ({Settings.UPDATE_INTERVAL / 60} minutes)"
     }
 
+
+@app.post("/api/trigger-update", status_code=202)
+async def trigger_update(background_tasks: BackgroundTasks):
+    background_tasks.add_task(UpdateManager.start_updates)
+    return {"message": "Background update process started"}
 @app.post("/updates/trigger")
 async def trigger_update(background_tasks: BackgroundTasks):
     """Manually trigger a data update"""
