@@ -10,9 +10,6 @@ python-dotenv
 pydantic-settings
 lxml
 datetime
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> db45b6f (update to update data every 15 minute)
