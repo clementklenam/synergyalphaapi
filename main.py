@@ -12,19 +12,11 @@ import math
 import re
 from typing import List, Dict, Any, Optional
 import screener
-<<<<<<< HEAD
-from datetime import timedelta
+
 
 # Set up logging
-=======
 from datetime import timedelta, datetime
-from config import Settings
-<<<<<<< HEAD
->>>>>>> db45b6f (update to update data every 15 minute)
-=======
-from settings import Settings
->>>>>>> ec28a2c (implement stock data updating systems)
-
+from settings import Settings 
 
 logging.basicConfig(
     level=logging.INFO,
@@ -64,19 +56,7 @@ async def lifespan(app):
     # Stop the update loop when the application shuts down
     await UpdateManager.stop_updates()
  
-@app.get("/updates/status")
-async def get_update_status():
-    """Get the current status of data updates"""
-    next_update_time = None
-    if UpdateManager._last_check:  # Change start_updates to _last_check
-        next_update_time = UpdateManager._last_check + timedelta(seconds=Settings.CHECK_INTERVAL)
-    
-    return {
-        "last_update": UpdateManager._last_check,  # Change start_updates to _last_check
-        "next_update": next_update_time,
-        "is_updating": UpdateManager._is_updating,
-        "update_interval": f"{Settings.CHECK_INTERVAL} seconds ({Settings.CHECK_INTERVAL / 60} minutes)"
-    }
+
 @app.get("/companies", response_model=List[dict])
 async def get_all_companies(db: AsyncIOMotorDatabase = Depends(get_database)):
     """Get basic information for all companies"""
@@ -481,27 +461,6 @@ async def get_cash_flow_statement(
         logger.error(f"Error fetching cash flow statement for {ticker}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal Server Error")\
             
-@app.get("/companies/{ticker}/officers")
-async def get_company_officers(
-    ticker: str,
-    db: AsyncIOMotorDatabase = Depends(get_database)
-):
-    """Get company officers and management team information"""
-    try:
-        company = await db.companies.find_one(
-            {"ticker": ticker.upper()},
-            {
-                "officers": 1,
-                "ceo": 1,
-                "_id": 0
-            }
-        )
-        if not company:
-            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
-        return clean_mongo_data(company)
-    except Exception as e:
-        logger.error(f"Error fetching officers for {ticker}: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 # Add these endpoints to your existing FastAPI app
 
