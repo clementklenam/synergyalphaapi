@@ -8,4 +8,7 @@ yfinance
 aiohttp
 python-dotenv
 pydantic-settings
+lxml
+
+
 
