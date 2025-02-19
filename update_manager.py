@@ -4,7 +4,8 @@ from typing import Optional, Dict, Any, List
 import yfinance as yf
 import pandas as pd
 import aiohttp
-from datetime import datetime, time, timedelta
+from datetime import datetime, time, timedelta 
+import time as time_module
 from pydantic import BaseModel
 import base64
 import json
@@ -68,6 +69,13 @@ class MarketStatus:
 
 
 class UpdateManager:
+    
+    
+    _semaphore = asyncio.Semaphore(2)  # Limit concurrent requests
+    _last_request_time = {}  # Track last request time per symbol
+    MIN_REQUEST_INTERVAL = 2.0  # Minimum seconds between requests per symbol
+    
+    
     _update_task: Optional[asyncio.Task] = None
     _last_check: Optional[datetime] = None
     _is_updating: bool = False
@@ -164,55 +172,7 @@ class UpdateManager:
                 cls.logger.error(f"Error in update loop: {str(e)}", exc_info=True)
                 await asyncio.sleep(60)  # Wait 1 minute before retrying
 
-    @classmethod
-    async def _process_updates(cls, symbols: List[str]):
-        """Process updates for a list of symbols"""
-        if cls._is_updating:
-            cls.logger.warning("Update already in progress, queuing symbols for next run")
-            cls._force_refresh_symbols.extend(symbols)
-            return
-        
-        cls._is_updating = True
-        successful_updates = 0
-        failed_updates = 0
-        
-        try:
-            cls.logger.info(f"Processing updates for {len(symbols)} symbols")
-            async with aiohttp.ClientSession() as session:
-                tasks = []
-                for symbol in symbols:
-                    tasks.append(cls.process_single_stock(symbol, session))
-                
-                # Process in smaller batches with increased delays
-                batch_size = 5  # Reduced from 10
-                for i in range(0, len(tasks), batch_size):
-                    batch_tasks = tasks[i:i+batch_size]
-                    batch_symbols = symbols[i:i+batch_size]
-                    results = await asyncio.gather(*batch_tasks, return_exceptions=True)
-                    
-                    # Store successful results in database
-                    for symbol, result in zip(batch_symbols, results):
-                        if isinstance(result, Exception):
-                            cls.logger.error(f"Failed to update {symbol}: {str(result)}")
-                            failed_updates += 1
-                        elif result:
-                            # Update the database
-                            await MongoManager.update_company_data(symbol, result)
-                            cls.logger.info(f"Successfully updated {symbol}")
-                            successful_updates += 1
-                        else:
-                            cls.logger.warning(f"No data returned for {symbol}")
-                            failed_updates += 1
-                    
-                    # Increased rate limiting delay between batches
-                    await asyncio.sleep(random.uniform(3, 5))
-                
-                cls.logger.info(f"Completed updates: {successful_updates} successful, {failed_updates} failed")
-        
-        except Exception as e:
-            cls.logger.error(f"Error processing updates: {str(e)}", exc_info=True)
-        finally:
-            cls._is_updating = False
+    
 
     @classmethod
     async def _check_symbol_for_updates(cls, symbol: str, db_data: Optional[Dict], session: aiohttp.ClientSession) -> bool:
@@ -416,10 +376,15 @@ class UpdateManager:
                 async with session.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies') as response:
                     if response.status == 200:
                         html = await response.text()
-                        df = pd.read_html(html)[0]
+                        # Use StringIO to avoid FutureWarning
+                        from io import StringIO
+                        df = pd.read_html(StringIO(html))[0]
                         return df['Symbol'].tolist()
             # Fallback to direct pandas if aiohttp fails
-            df = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
+            from io import StringIO
+            import requests
+            html = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies').text
+            df = pd.read_html(StringIO(html))[0]
             return df['Symbol'].tolist()
         except Exception as e:
             cls.logger.error(f"Error fetching S&P 500 symbols: {str(e)}")
@@ -454,19 +419,92 @@ class UpdateManager:
         except Exception as e:
             cls.logger.error(f"Error fetching logo for {symbol}: {str(e)}")
             return None
-    @retry(
-    retry=retry_if_exception_type(YFRateLimitError),
-    wait=wait_exponential(multiplier=1, min=4, max=60),
-    stop=stop_after_attempt(3)
-    )
+    
+    
+    @classmethod
+    async def _process_updates(cls, symbols: List[str]):
+        """Process updates for a list of symbols"""
+        if cls._is_updating:
+            cls.logger.warning("Update already in progress, queuing symbols for next run")
+            cls._force_refresh_symbols.extend(symbols)
+            return
+        
+        cls._is_updating = True
+        successful_updates = 0
+        failed_updates = 0
+        
+        try:
+            cls.logger.info(f"Processing updates for {len(symbols)} symbols")
+            async with aiohttp.ClientSession() as session:
+                # Process in smaller batches
+                batch_size = 3  # Reduced batch size
+                for i in range(0, len(symbols), batch_size):
+                    batch_symbols = symbols[i:i+batch_size]
+                    
+                    # Process batch concurrently with rate limiting
+                    tasks = []
+                    for symbol in batch_symbols:
+                        # Ensure minimum time between requests for same symbol
+                        last_request = cls._last_request_time.get(symbol, 0)
+                        current_time = time_module.time()  # Use renamed time module
+                        if current_time - last_request < cls.MIN_REQUEST_INTERVAL:
+                            await asyncio.sleep(cls.MIN_REQUEST_INTERVAL - (current_time - last_request))
+                        
+                        cls._last_request_time[symbol] = current_time
+                        
+                        # Create task with semaphore
+                        async with cls._semaphore:
+                            task = asyncio.create_task(cls.process_single_stock(symbol, session))
+                            tasks.append((symbol, task))
+                    
+                    # Wait for batch to complete
+                    for symbol, task in tasks:
+                        try:
+                            result = await task
+                            if result:
+                                try:
+                                    await MongoManager.update_company_data(symbol, result)
+                                    cls.logger.info(f"Successfully updated {symbol}")
+                                    successful_updates += 1
+                                except Exception as e:
+                                    cls.logger.error(f"Error saving data for {symbol}: {str(e)}")
+                                    failed_updates += 1
+                            else:
+                                cls.logger.warning(f"No data returned for {symbol}")
+                                failed_updates += 1
+                        except Exception as e:
+                            cls.logger.error(f"Failed to update {symbol}: {str(e)}")
+                            failed_updates += 1
+                    
+                    # Add delay between batches
+                    await asyncio.sleep(random.uniform(5, 8))  # Increased delay
+                
+                cls.logger.info(f"Completed updates: {successful_updates} successful, {failed_updates} failed")
+        
+        except Exception as e:
+            cls.logger.error(f"Error processing updates: {str(e)}", exc_info=True)
+        finally:
+            cls._is_updating = False
 
     @classmethod
+    @retry(
+    retry=retry_if_exception_type(YFRateLimitError),
+    wait=wait_exponential(multiplier=5, min=10, max=300),  # Increased wait times
+    stop=stop_after_attempt(5)  # Increased attempts
+    )
     async def _get_yf_data(cls, symbol: str) -> Optional[Dict[str, Any]]:
         """Fetch all other data from Yahoo Finance including financial statements"""
         try:
             await asyncio.sleep(random.uniform(0.5, 2.0))
             stock = yf.Ticker(symbol)
-            info = stock.info
+            
+            try:
+                info = stock.info
+            except YFRateLimitError:
+                raise  # Re-raise rate limit errors for retry
+            except Exception as e:
+                cls.logger.error(f"Error getting info for {symbol}: {str(e)}")
+                return None
             
             # Extract and store officers data
             officers_data = []
@@ -580,8 +618,10 @@ class UpdateManager:
                     "earnings_growth": info.get('earningsGrowth'),
                 }
             }
+        except YFRateLimitError:
+            raise  # Re-raise rate limit errors for retry
         except Exception as e:
-            cls.logger.error(f"Error getting Yahoo Finance data for {symbol}: {str(e)}", exc_info=True)
+            cls.logger.error(f"Error getting Yahoo Finance data for {symbol}: {str(e)}")
             return None
     
     @classmethod
@@ -634,105 +674,167 @@ class UpdateManager:
             cls.logger.error(f"Error fetching Finnhub data for {symbol}: {str(e)}")
             return None
 
+    # First, modify process_single_stock to be a regular async method instead of a classmethod
     @classmethod
-    async def process_single_stock(cls, symbol: str, session: aiohttp.ClientSession) ->   Optional[Dict[str, Any]]:
-        """Process a single stock symbol using Yahoo Finance and Finnhub data"""
+    @retry(
+    retry=retry_if_exception_type(YFRateLimitError),
+    wait=wait_exponential(multiplier=1, min=4, max=60),
+    stop=stop_after_attempt(3)
+    )
+    async def process_single_stock(cls, symbol: str, session: aiohttp.ClientSession) -> Optional[Dict[str, Any]]:
+        """Process a single stock symbol using Yahoo Finance and Finnhub data."""
         try:
-            # Fetch data from sources concurrently
-            yf_task = asyncio.create_task(cls._get_yf_data(symbol))
-            finnhub_task = asyncio.create_task(cls.get_finnhub_data(symbol, session))
-            logo_task = asyncio.create_task(cls.get_stock_logo(symbol, session))
-            
-            # Await all tasks
-            yf_info = await yf_task
-            finnhub_info = await finnhub_task
-            logo = await logo_task
-            
-            if not yf_info:
-                yf_info = {}
-                cls.logger.warning(f"No Yahoo Finance data retrieved for {symbol}")
-            if not finnhub_info:
-                finnhub_info = {}
-                cls.logger.warning(f"No Finnhub data retrieved for {symbol}")
-            
-            # Helper function to get first non-None value
-            def get_first_value(*args):
-                for arg in args:
-                    if arg is not None:
-                        return arg
+            # Get data from different sources with proper error handling
+            yf_data = None
+            finnhub_data = None
+            logo = None
+
+            try:
+                yf_data = await cls._get_yf_data(symbol)
+            except YFRateLimitError:
+                # Re-raise YFRateLimitError to trigger retry
+                raise
+            except Exception as e:
+                cls.logger.error(f"Error getting Yahoo Finance data for {symbol}: {str(e)}")
+
+            try:
+                finnhub_data = await cls.get_finnhub_data(symbol, session)
+            except Exception as e:
+                cls.logger.error(f"Error getting Finnhub data for {symbol}: {str(e)}")
+
+            try:
+                logo = await cls.get_stock_logo(symbol, session)
+            except Exception as e:
+                cls.logger.error(f"Error getting logo for {symbol}: {str(e)}")
+
+            # If both data sources failed, return None
+            if yf_data is None and finnhub_data is None:
+                cls.logger.warning(f"No data available for {symbol} from any source")
                 return None
-            
-            # Helper function to ensure integer values
+
+            # Initialize yf_data if it's None to avoid attribute errors
+            if yf_data is None:
+                yf_data = {}
+
+            # Helper function
+            def get_first_value(*args):
+                return next((arg for arg in args if arg is not None), None)
+
             def ensure_type(value, target_type):
                 if value is None:
                     return None
                 try:
-                    if target_type == int:
-                        # For integer conversion, we need to handle floats specially
-                        if isinstance(value, float):
-                            return int(value)
-                        return target_type(value)
+                    if target_type == int and isinstance(value, float):
+                        return int(value)
                     return target_type(value)
                 except (ValueError, TypeError):
                     cls.logger.warning(f"Type conversion error: cannot convert {value} to {target_type.__name__}")
                     return None
-            
+
             # Combine data from all sources
             combined_data = {
                 "ticker": symbol,
-                "price": get_first_value(yf_info.get('price'), finnhub_info.get('price')),
-                "beta": get_first_value(yf_info.get('beta'), finnhub_info.get('beta')),
-                "volAvg": ensure_type(get_first_value(yf_info.get('volAvg'), finnhub_info.get('volAvg')), int),
-                "mktCap": get_first_value(yf_info.get('mktCap'), finnhub_info.get('mktCap')),  # Keep as float now
-                "lastDiv": get_first_value(yf_info.get('lastDiv'), finnhub_info.get('lastDiv')),
-                "range": yf_info.get('range'),
-                "changes": get_first_value(yf_info.get('changes'), finnhub_info.get('changes')),
-                "companyName": get_first_value(yf_info.get('companyName'), finnhub_info.get('companyName')),
-                "currency": get_first_value(yf_info.get('currency'), finnhub_info.get('currency'), 'USD'),
-                "cusip": get_first_value(yf_info.get('cusip'), finnhub_info.get('cusip')),
-                "exchange": get_first_value(yf_info.get('exchange'), finnhub_info.get('exchange')),
-                "industry": get_first_value(yf_info.get('industry'), finnhub_info.get('industry')),
-                "website": get_first_value(yf_info.get('website'), finnhub_info.get('website')),
-                "description": get_first_value(yf_info.get('description'), finnhub_info.get('description')),
-                "sector": get_first_value(yf_info.get('sector'), finnhub_info.get('sector')),
-                "country": get_first_value(yf_info.get('country'), finnhub_info.get('country')),
-                "fullTimeEmployees": ensure_type(yf_info.get('fullTimeEmployees'), int),
-                "ceo": yf_info.get('ceo'),
-                "officers": yf_info.get('officers'),
-                "phone": get_first_value(yf_info.get('phone'), finnhub_info.get('phone')),
-                "address": get_first_value(yf_info.get('address'), finnhub_info.get('address')),
-                "city": get_first_value(yf_info.get('city'), finnhub_info.get('city')),
-                "state": get_first_value(yf_info.get('state'), finnhub_info.get('state')),
-                "zip": get_first_value(yf_info.get('zip'), finnhub_info.get('zip')),
+                "price": get_first_value(yf_data.get('price'), finnhub_data.get('price') if finnhub_data else None),
+                "beta": get_first_value(yf_data.get('beta'), finnhub_data.get('beta') if finnhub_data else None),
+                "volAvg": ensure_type(get_first_value(
+                    yf_data.get('volAvg'), 
+                    finnhub_data.get('volAvg') if finnhub_data else None
+                ), int),
+                "mktCap": get_first_value(yf_data.get('mktCap'), finnhub_data.get('mktCap') if finnhub_data else None),
+                "lastDiv": get_first_value(yf_data.get('lastDiv'), finnhub_data.get('lastDiv') if finnhub_data else None),
+                "range": yf_data.get('range'),
+                "changes": get_first_value(yf_data.get('changes'), finnhub_data.get('changes') if finnhub_data else None),
+                "companyName": get_first_value(
+                    yf_data.get('companyName'), 
+                    finnhub_data.get('companyName') if finnhub_data else None
+                ),
+                "currency": get_first_value(
+                    yf_data.get('currency'), 
+                    finnhub_data.get('currency') if finnhub_data else None,
+                    'USD'
+                ),
+                "cusip": get_first_value(yf_data.get('cusip'), finnhub_data.get('cusip') if finnhub_data else None),
+                "exchange": get_first_value(
+                    yf_data.get('exchange'), 
+                    finnhub_data.get('exchange') if finnhub_data else None
+                ),
+                "industry": get_first_value(
+                    yf_data.get('industry'), 
+                    finnhub_data.get('industry') if finnhub_data else None
+                ),
+                "website": get_first_value(yf_data.get('website'), finnhub_data.get('website') if finnhub_data else None),
+                "description": get_first_value(
+                    yf_data.get('description'), 
+                    finnhub_data.get('description') if finnhub_data else None
+                ),
+                "sector": get_first_value(yf_data.get('sector'), finnhub_data.get('sector') if finnhub_data else None),
+                "country": get_first_value(yf_data.get('country'), finnhub_data.get('country') if finnhub_data else None),
+                "fullTimeEmployees": ensure_type(yf_data.get('fullTimeEmployees'), int),
+                "ceo": yf_data.get('ceo'),
+                "officers": yf_data.get('officers'),
+                "phone": get_first_value(yf_data.get('phone'), finnhub_data.get('phone') if finnhub_data else None),
+                "address": get_first_value(yf_data.get('address'), finnhub_data.get('address') if finnhub_data else None),
+                "city": get_first_value(yf_data.get('city'), finnhub_data.get('city') if finnhub_data else None),
+                "state": get_first_value(yf_data.get('state'), finnhub_data.get('state') if finnhub_data else None),
+                "zip": get_first_value(yf_data.get('zip'), finnhub_data.get('zip') if finnhub_data else None),
                 "image": logo,
-                "quote": yf_info.get('quote', {}),
-                "key_metrics": yf_info.get('key_metrics', {}),
-                "ttm_ratios": yf_info.get('ttm_ratios', {}),
-                "financial_statements": yf_info.get('financial_statements', {}),
-                "financial_data_hash": yf_info.get('financial_data_hash'),
+                "quote": {
+                    "price": get_first_value(
+                        yf_data.get('price'), 
+                        finnhub_data.get('price') if finnhub_data else None
+                    ),
+                    "change": yf_data.get('quote', {}).get('change'),
+                    "changesPercentage": yf_data.get('quote', {}).get('changesPercentage'),
+                    "volume": yf_data.get('quote', {}).get('volume'),
+                    "avgVolume": yf_data.get('quote', {}).get('avgVolume'),
+                    "previousClose": yf_data.get('quote', {}).get('previousClose'),
+                    "dayLow": yf_data.get('quote', {}).get('dayLow'),
+                    "dayHigh": yf_data.get('quote', {}).get('dayHigh'),
+                    "yearLow": yf_data.get('quote', {}).get('yearLow'),
+                    "yearHigh": yf_data.get('quote', {}).get('yearHigh'),
+                    "marketCap": yf_data.get('quote', {}).get('marketCap'),
+                    "timestamp": datetime.now().isoformat()
+                },
+                "key_metrics": {
+                    "pe_ratio": yf_data.get('key_metrics', {}).get('pe_ratio'),
+                    "forward_pe": yf_data.get('key_metrics', {}).get('forward_pe'),
+                    "peg_ratio": yf_data.get('key_metrics', {}).get('peg_ratio'),
+                    "price_to_book": yf_data.get('key_metrics', {}).get('price_to_book'),
+                    "price_to_sales": yf_data.get('key_metrics', {}).get('price_to_sales'),
+                    "beta": yf_data.get('key_metrics', {}).get('beta'),
+                    "dividend_rate": yf_data.get('key_metrics', {}).get('dividend_rate'),
+                    "dividend_yield": yf_data.get('key_metrics', {}).get('dividend_yield')
+                },
+                "ttm_ratios": {
+                    "profit_margin": yf_data.get('ttm_ratios', {}).get('profit_margin'),
+                    "operating_margin": yf_data.get('ttm_ratios', {}).get('operating_margin'),
+                    "roa": yf_data.get('ttm_ratios', {}).get('roa'),
+                    "roe": yf_data.get('ttm_ratios', {}).get('roe'),
+                    "revenue_growth": yf_data.get('ttm_ratios', {}).get('revenue_growth'),
+                    "earnings_growth": yf_data.get('ttm_ratios', {}).get('earnings_growth')
+                },
+                "financial_statements": yf_data.get('financial_statements', {}),
+                "financial_data_hash": yf_data.get('financial_data_hash'),
                 "market_status": cls._market_status,
                 "last_updated": datetime.now()
             }
             
-            # Remove None values to keep data clean
+            # Remove None values
             combined_data = {k: v for k, v in combined_data.items() if v is not None}
-            
-            # Validate data using Pydantic model
-            try:
-                validated_data = StockData(**combined_data).dict(exclude_none=True)
-                return validated_data if len(validated_data) > 5 else None
-            except Exception as e:
-                cls.logger.error(f"Data validation error for {symbol}: {str(e)}")
-                # For debugging, print the problematic fields
-                for field, value in combined_data.items():
-                    if field in StockData.__fields__:
-                        field_type = StockData.__fields__[field].type_
-                        if not isinstance(value, field_type) and value is not None:
-                            cls.logger.warning(f"Field {field} has value {value} of type {type(value)}, expected {field_type}")
-                
-                # Fall back to returning original data if validation fails but we have sufficient data
-                return combined_data if len(combined_data) > 5 else None
-                
+
+            # Make sure we have at least some basic data
+            required_fields = ["ticker", "price", "companyName"]
+            if not all(field in combined_data for field in required_fields):
+                if "ticker" in combined_data and any(field in combined_data for field in required_fields[1:]):
+                    # At least we have ticker and one other required field, continue
+                    pass
+                else:
+                    cls.logger.warning(f"Insufficient data for {symbol}, missing required fields")
+                    return None
+
+            return combined_data if len(combined_data) > 5 else None
+
         except Exception as e:
             cls.logger.error(f"Error processing {symbol}: {str(e)}")
             return None
+        
