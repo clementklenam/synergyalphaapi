@@ -146,7 +146,7 @@ class UpdateManager:
                 db = await MongoManager.get_database()
                 
                 async with aiohttp.ClientSession() as session:
-                    for symbol in all_symbols[:10]:  # Limit to 10 symbols for testing
+                    for symbol in all_symbols:  # Limit to 10 symbols for testing
                         db_data = await cls._get_company_data(symbol, db)
                         has_updates = await cls._check_symbol_for_updates(symbol, db_data, session)
                         if has_updates:
