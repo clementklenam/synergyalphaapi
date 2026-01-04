@@ -833,6 +833,17 @@ async def get_comprehensive_data(
         if not company:
             raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
         
+        # Fetch shares outstanding from yfinance early (we'll use it in multiple places)
+        shares_outstanding = None
+        stock = None
+        try:
+            await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            shares_outstanding = info.get('sharesOutstanding')
+        except Exception:
+            pass
+        
         # 1. Company Profile Data
         profile = {
             "companyName": company.get("companyName") or company.get("name"),
@@ -847,7 +858,8 @@ async def get_comprehensive_data(
             "website": company.get("website"),
             "marketCap": company.get("mktCap") or company.get("marketCap") or company.get("quote", {}).get("marketCap"),
             "price": company.get("price") or company.get("quote", {}).get("price"),
-            "beta": company.get("beta")
+            "beta": company.get("beta"),
+            "sharesOutstanding": shares_outstanding
         }
         
         # 2. Quote Data
@@ -869,15 +881,16 @@ async def get_comprehensive_data(
             "eps": company.get("key_metrics", {}).get("eps"),
             "beta": company.get("beta"),
             "dividendYield": company.get("key_metrics", {}).get("dividend_yield") or quote_data.get("dividendYield"),
-            "sector": company.get("sector")
+            "sector": company.get("sector"),
+            "sharesOutstanding": shares_outstanding
         }
         
         # 3. Historical Price Data (fetch from yfinance - 365+ days)
         historical_data = []
-        stock = None
         try:
-            await asyncio.sleep(0.2)  # Small delay to avoid rate limits
-            stock = yf.Ticker(ticker)
+            if stock is None:
+                await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+                stock = yf.Ticker(ticker)
             hist = stock.history(period="1y")
             if not hist.empty:
                 # Convert to list of dicts with date and close
