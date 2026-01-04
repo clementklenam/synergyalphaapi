@@ -836,9 +836,10 @@ async def get_comprehensive_data(
         if not company:
             raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
         
-        # Fetch shares outstanding from yfinance early (we'll use it in multiple places)
+        # Fetch shares outstanding and EPS data from yfinance early (we'll use it in multiple places)
         shares_outstanding = None
         stock = None
+        info = None
         try:
             await asyncio.sleep(0.2)  # Small delay to avoid rate limits
             stock = yf.Ticker(ticker)
@@ -887,6 +888,22 @@ async def get_comprehensive_data(
             "sector": company.get("sector"),
             "sharesOutstanding": shares_outstanding
         }
+        
+        # Add EPS data from yfinance if available
+        if info:
+            trailing_eps = info.get('trailingEps')
+            eps_trailing_twelve_months = info.get('epsTrailingTwelveMonths')
+            eps_current_year = info.get('epsCurrentYear')
+            forward_eps = info.get('forwardEps') or info.get('epsForward')
+            
+            if trailing_eps is not None:
+                quote["trailingEps"] = trailing_eps
+            if eps_trailing_twelve_months is not None:
+                quote["epsTrailingTwelveMonths"] = eps_trailing_twelve_months
+            if eps_current_year is not None:
+                quote["epsCurrentYear"] = eps_current_year
+            if forward_eps is not None:
+                quote["forwardEps"] = forward_eps
         
         # 3. Historical Price Data (fetch from yfinance - 365+ days)
         historical_data = []
@@ -958,15 +975,23 @@ async def get_comprehensive_data(
         }
         
         # 6. Financial Health Data
+        ttm_ratios = company.get("ttm_ratios", {})
+        ratios = {
+            "profit_margin": ttm_ratios.get("profit_margin"),
+            "operating_margin": ttm_ratios.get("operating_margin"),
+            "roa": ttm_ratios.get("roa"),
+            "roe": ttm_ratios.get("roe")
+        }
+        # Only include revenue_growth and earnings_growth if they're not null
+        revenue_growth = ttm_ratios.get("revenue_growth")
+        earnings_growth = ttm_ratios.get("earnings_growth")
+        if revenue_growth is not None:
+            ratios["revenue_growth"] = revenue_growth
+        if earnings_growth is not None:
+            ratios["earnings_growth"] = earnings_growth
+        
         financial_health = {
-            "ratios": {
-                "profit_margin": company.get("ttm_ratios", {}).get("profit_margin"),
-                "operating_margin": company.get("ttm_ratios", {}).get("operating_margin"),
-                "roa": company.get("ttm_ratios", {}).get("roa"),
-                "roe": company.get("ttm_ratios", {}).get("roe"),
-                "revenue_growth": company.get("ttm_ratios", {}).get("revenue_growth"),
-                "earnings_growth": company.get("ttm_ratios", {}).get("earnings_growth")
-            },
+            "ratios": ratios,
             "income_statements": {
                 "current_annual": financial_statements.get("income_statement", {}).get("annual", {}),
                 "current_quarterly": financial_statements.get("income_statement", {}).get("quarterly", {}),
