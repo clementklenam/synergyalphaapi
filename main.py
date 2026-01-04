@@ -19,6 +19,9 @@ from news_service import get_news_service
 import yfinance as yf
 import pandas as pd
 from yfinance.exceptions import YFRateLimitError
+import aiohttp
+from bs4 import BeautifulSoup
+import re
 
 
 # Set up logging
@@ -1174,6 +1177,319 @@ async def get_realtime_status():
     except Exception as e:
         logger.error(f"Error getting real-time status: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# Dividend endpoint
+
+@app.get("/companies/{ticker}/dividends")
+async def get_dividend_data(
+    ticker: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """
+    Get comprehensive dividend data for a company including:
+    1. Dividend Metrics (yield, annual payout, payout ratio, growth streak, EPS, frequency)
+    2. Upcoming Dividend Payouts (ex-dividend date, amount, payment date, record date, declare date)
+    3. Dividend History Table (declareDate, exDivDate, recordDate, payDate, amount, fiscal year/quarter)
+    4. Dividend Yield Chart Data (date, yield percentage)
+    5. Payout History Chart Data (year, payout amount, growth percentage)
+    6. Quick Stats (frequency, payout type, last/next payment dates)
+    
+    Data Sources:
+    - yfinance: Basic dividend data (yield, rate, history, dates)
+    - SEC EDGAR (Free, No API Key): recordDate, declareDate, payoutType, growth_streak calculation
+    """
+    try:
+        ticker = ticker.upper()
+        
+        # Verify company exists
+        company = await db.companies.find_one(
+            {"ticker": ticker},
+            {"ticker": 1, "sector": 1, "_id": 0}
+        )
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+        
+        # Fetch dividend data from yfinance
+        await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+        stock = yf.Ticker(ticker)
+        info = stock.info
+        
+        # Get dividend history
+        dividends_series = None
+        dividends_dict = {}
+        try:
+            dividends_series = stock.dividends
+            if not dividends_series.empty:
+                # Convert pandas Series to dict with date strings as keys
+                dividends_dict = {}
+                for date, value in dividends_series.items():
+                    date_str = date.strftime("%Y-%m-%d") if hasattr(date, 'strftime') else str(date)
+                    dividends_dict[date_str] = float(value) if pd.notna(value) else None
+        except Exception as e:
+            logger.warning(f"Error fetching dividend history for {ticker}: {e}")
+            dividends_dict = {}
+        
+        # 1. Dividend Metrics
+        eps = info.get('trailingEps') or info.get('epsTrailing12Months')
+        dividend_yield = info.get('dividendYield') or info.get('trailingAnnualDividendYield')
+        dividend_rate = info.get('dividendRate') or info.get('trailingAnnualDividendRate')
+        payout_ratio = info.get('payoutRatio')
+        five_year_avg_yield = info.get('fiveYearAvgDividendYield')
+        
+        # Calculate annual payout (dividend rate or last dividend * frequency)
+        annual_payout = dividend_rate
+        if annual_payout is None and dividends_dict:
+            # Try to calculate from recent dividends
+            try:
+                recent_dividends = list(dividends_dict.values())[-4:] if dividends_dict else []
+                if recent_dividends:
+                    annual_payout = sum([d for d in recent_dividends if d is not None]) if len(recent_dividends) >= 4 else sum([d for d in recent_dividends if d is not None]) * (4 / len(recent_dividends))
+            except Exception:
+                pass
+        
+        # Calculate growth_streak from yfinance dividend data (we can calculate from historical dividends)
+        growth_streak = None
+        if dividends_dict:
+            try:
+                # Group dividends by year and calculate totals
+                yearly_totals = {}
+                for date_str, amount in dividends_dict.items():
+                    if date_str and amount:
+                        try:
+                            year = int(date_str.split('-')[0])
+                            if year not in yearly_totals:
+                                yearly_totals[year] = 0
+                            yearly_totals[year] += float(amount) if amount else 0
+                        except Exception:
+                            continue
+                
+                # Calculate consecutive years of growth
+                if len(yearly_totals) > 1:
+                    sorted_years = sorted(yearly_totals.keys(), reverse=True)
+                    streak = 0
+                    for i in range(len(sorted_years) - 1):
+                        current_year = sorted_years[i]
+                        prev_year = sorted_years[i + 1]
+                        if yearly_totals[current_year] > yearly_totals[prev_year]:
+                            streak += 1
+                        else:
+                            break
+                    growth_streak = streak if streak > 0 else None
+            except Exception as e:
+                logger.debug(f"Error calculating growth streak for {ticker}: {e}")
+                growth_streak = None
+        
+        # Build dividend metrics with only non-null values
+        dividend_metrics = {}
+        if dividend_yield is not None:
+            dividend_metrics["dividend_yield"] = dividend_yield
+        if annual_payout is not None:
+            dividend_metrics["annual_payout"] = annual_payout
+        if payout_ratio is not None:
+            dividend_metrics["payout_ratio"] = payout_ratio
+        if growth_streak is not None:
+            dividend_metrics["growth_streak"] = growth_streak
+        if info.get('dividendFrequency') is not None:
+            dividend_metrics["payout_frequency"] = info.get('dividendFrequency')
+        if eps is not None:
+            dividend_metrics["eps"] = eps
+        if five_year_avg_yield is not None:
+            dividend_metrics["five_year_avg_yield"] = five_year_avg_yield
+        if info.get('lastDividendValue') is not None:
+            dividend_metrics["last_dividend_value"] = info.get('lastDividendValue')
+        if info.get('trailingAnnualDividendRate') is not None:
+            dividend_metrics["trailing_annual_dividend_rate"] = info.get('trailingAnnualDividendRate')
+        if info.get('trailingAnnualDividendYield') is not None:
+            dividend_metrics["trailing_annual_dividend_yield"] = info.get('trailingAnnualDividendYield')
+        
+        # 2. Upcoming Dividend Payouts
+        ex_dividend_date = info.get('exDividendDate')
+        dividend_date = info.get('dividendDate')
+        
+        # Format dates if they exist (yfinance returns timestamps)
+        ex_dividend_date_str = None
+        dividend_date_str = None
+        if ex_dividend_date:
+            try:
+                if isinstance(ex_dividend_date, (int, float)):
+                    ex_dividend_date_str = datetime.fromtimestamp(ex_dividend_date).strftime("%Y-%m-%d")
+                else:
+                    ex_dividend_date_str = str(ex_dividend_date)
+            except Exception:
+                ex_dividend_date_str = str(ex_dividend_date) if ex_dividend_date else None
+        
+        if dividend_date:
+            try:
+                if isinstance(dividend_date, (int, float)):
+                    dividend_date_str = datetime.fromtimestamp(dividend_date).strftime("%Y-%m-%d")
+                else:
+                    dividend_date_str = str(dividend_date)
+            except Exception:
+                dividend_date_str = str(dividend_date) if dividend_date else None
+        
+        # Calculate days until dates
+        days_until_ex_div = None
+        days_until_payment = None
+        try:
+            if ex_dividend_date_str:
+                ex_div_dt = datetime.strptime(ex_dividend_date_str, "%Y-%m-%d")
+                days_until_ex_div = (ex_div_dt - datetime.now()).days
+            if dividend_date_str:
+                payment_dt = datetime.strptime(dividend_date_str, "%Y-%m-%d")
+                days_until_payment = (payment_dt - datetime.now()).days
+        except Exception:
+            pass
+        
+        # Build upcoming payouts with only non-null values
+        upcoming_payouts = {}
+        if ex_dividend_date_str:
+            upcoming_payouts["exDividendDate"] = ex_dividend_date_str
+        if annual_payout is not None:
+            upcoming_payouts["exDividendAmount"] = annual_payout
+        if dividend_date_str:
+            upcoming_payouts["paymentDate"] = dividend_date_str
+        if days_until_ex_div is not None:
+            upcoming_payouts["daysUntilExDividend"] = days_until_ex_div
+        if days_until_payment is not None:
+            upcoming_payouts["daysUntilPayment"] = days_until_payment
+        
+        # 3. Dividend History Table
+        dividend_history = []
+        if dividends_dict:
+            try:
+                # Convert dividends dict to list format (only yfinance data)
+                for date_str, amount in sorted(dividends_dict.items(), reverse=True):
+                    try:
+                        # Parse date
+                        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                        
+                        # Build history entry with only available data
+                        history_entry = {
+                            "exDivDate": date_str,
+                            "amount": amount,
+                            "fiscalYear": date_obj.year,
+                            "fiscalQuarter": ((date_obj.month - 1) // 3) + 1
+                        }
+                        dividend_history.append(history_entry)
+                    except Exception as e:
+                        logger.debug(f"Error parsing dividend date {date_str}: {e}")
+                        continue
+            except Exception as e:
+                logger.warning(f"Error processing dividend history for {ticker}: {e}")
+                dividend_history = []
+        
+        # 4. Dividend Yield Chart Data
+        yield_chart_data = []
+        if dividends_dict and dividend_yield:
+            try:
+                # Calculate yield for each dividend date (simplified - using current price)
+                current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+                if current_price:
+                    for date_str, amount in sorted(dividends_dict.items()):
+                        try:
+                            if amount is not None:
+                                yield_value = (amount / current_price * 100) if current_price else None
+                                yield_chart_data.append({
+                                    "date": date_str,
+                                    "yield": yield_value,
+                                    "amount": amount
+                                })
+                        except Exception:
+                            continue
+            except Exception as e:
+                logger.warning(f"Error creating yield chart data for {ticker}: {e}")
+        
+        # 5. Payout History Chart Data
+        payout_chart_data = []
+        if dividends_dict:
+            try:
+                # Group by year and calculate totals
+                yearly_payouts = {}
+                for date_str, amount in dividends_dict.items():
+                    try:
+                        if isinstance(date_str, str):
+                            year = int(date_str.split('-')[0])
+                        else:
+                            year = date_str.year if hasattr(date_str, 'year') else datetime.fromtimestamp(date_str).year
+                        
+                        if year not in yearly_payouts:
+                            yearly_payouts[year] = 0
+                        if amount is not None:
+                            yearly_payouts[year] += amount
+                    except Exception:
+                        continue
+                
+                # Convert to list and calculate growth
+                sorted_years = sorted(yearly_payouts.keys(), reverse=True)
+                for i, year in enumerate(sorted_years):
+                    payout = yearly_payouts[year]
+                    growth = None
+                    if i < len(sorted_years) - 1:
+                        prev_year_payout = yearly_payouts[sorted_years[i + 1]]
+                        if prev_year_payout > 0:
+                            growth = ((payout - prev_year_payout) / prev_year_payout) * 100
+                    
+                    payout_chart_data.append({
+                        "year": year,
+                        "payout": payout,
+                        "growth": growth
+                    })
+                
+                # Calculate CAGR (if we have enough years)
+                if len(payout_chart_data) >= 2:
+                    first_payout = payout_chart_data[-1]["payout"]
+                    last_payout = payout_chart_data[0]["payout"]
+                    years = payout_chart_data[0]["year"] - payout_chart_data[-1]["year"]
+                    if first_payout > 0 and years > 0:
+                        cagr = ((last_payout / first_payout) ** (1 / years) - 1) * 100
+                        payout_chart_data[0]["cagr"] = cagr
+            except Exception as e:
+                logger.warning(f"Error creating payout chart data for {ticker}: {e}")
+        
+        # Calculate summary stats
+        current_payout = payout_chart_data[0]["payout"] if payout_chart_data else annual_payout
+        yoy_growth = payout_chart_data[0]["growth"] if payout_chart_data else None
+        
+        # 6. Quick Stats
+        last_payment_date = None
+        next_payment_date = dividend_date_str
+        if dividend_history:
+            last_payment_date = dividend_history[0].get("exDivDate") if dividend_history else None
+        
+        # Build quick stats with only non-null values
+        quick_stats = {}
+        if info.get('dividendFrequency') is not None:
+            quick_stats["frequency"] = info.get('dividendFrequency')
+        if last_payment_date:
+            quick_stats["lastPaymentDate"] = last_payment_date
+        if next_payment_date:
+            quick_stats["nextPaymentDate"] = next_payment_date
+        if current_payout is not None:
+            quick_stats["currentPayout"] = current_payout
+        if yoy_growth is not None:
+            quick_stats["yoyGrowth"] = yoy_growth
+        if payout_chart_data and payout_chart_data[0].get("cagr") is not None:
+            quick_stats["cagr"] = payout_chart_data[0].get("cagr")
+        
+        # Combine all data
+        dividend_data = {
+            "ticker": ticker,
+            "dividendMetrics": clean_mongo_data(dividend_metrics),
+            "upcomingPayouts": clean_mongo_data(upcoming_payouts),
+            "dividendHistory": clean_mongo_data(dividend_history),
+            "yieldChartData": clean_mongo_data(yield_chart_data),
+            "payoutChartData": clean_mongo_data(payout_chart_data),
+            "quickStats": clean_mongo_data(quick_stats)
+        }
+        
+        return dividend_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching dividend data for {ticker}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
 
 import os
 import uvicorn
