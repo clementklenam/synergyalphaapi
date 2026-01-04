@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Query, Depends, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Query, Depends, BackgroundTasks, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 import logging
@@ -12,6 +12,13 @@ import math
 import re
 from typing import List, Dict, Any, Optional
 import screener
+from contextlib import asynccontextmanager
+import asyncio
+from realtime_prices import get_realtime_manager
+from news_service import get_news_service
+import yfinance as yf
+import pandas as pd
+from yfinance.exceptions import YFRateLimitError
 
 
 # Set up logging
@@ -30,9 +37,25 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-app = FastAPI(title="Stock Market Data API", description="API for accessing S&P 500 stock data")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start the update loop when the application starts
+    await UpdateManager.start_updates()
+    # Start the real-time price manager
+    realtime_manager = get_realtime_manager()
+    await realtime_manager.start()
+    yield
+    # Stop the real-time price manager
+    await realtime_manager.stop()
+    # Stop the update loop when the application shuts down
+    await UpdateManager.stop_updates()
 
 
+app = FastAPI(
+    title="Stock Market Data API", 
+    description="API for accessing S&P 500 stock data",
+    lifespan=lifespan
+)
 
 
 app.include_router(screener.router)
@@ -45,16 +68,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-
-@app.router.lifespan_context
-async def lifespan(app):
-    # Start the update loop when the application starts
-    await UpdateManager.start_updates()
-    yield
-    # Stop the update loop when the application shuts down
-    await UpdateManager.stop_updates()
  
 
 @app.get("/companies", response_model=List[dict])
@@ -254,6 +267,34 @@ async def get_update_status():
 async def trigger_update(background_tasks: BackgroundTasks):
     background_tasks.add_task(UpdateManager.start_updates)
     return {"message": "Background update process started"}
+
+@app.post("/api/update-all-companies", status_code=202)
+async def update_all_companies(background_tasks: BackgroundTasks, db: AsyncIOMotorDatabase = Depends(get_database)):
+    """Trigger an update for all companies in the database"""
+    try:
+        # Get all tickers from database
+        companies = await db.companies.find({}, {"ticker": 1, "_id": 0}).to_list(length=None)
+        symbols = [company["ticker"] for company in companies if "ticker" in company]
+        
+        if not symbols:
+            return {"message": "No companies found in database", "status": "error"}
+        
+        background_tasks.add_task(UpdateManager.update_stock_data, symbols)
+        return {
+            "message": f"Update triggered for {len(symbols)} companies",
+            "status": "processing",
+            "count": len(symbols)
+        }
+    except Exception as e:
+        logger.error(f"Error triggering update for all companies: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/update-company/{ticker}", status_code=202)
+async def update_company(ticker: str, background_tasks: BackgroundTasks):
+    """Trigger an update for a specific company"""
+    ticker = ticker.upper()
+    background_tasks.add_task(UpdateManager.update_stock_data, [ticker])
+    return {"message": f"Update triggered for {ticker}", "ticker": ticker}
 # @app.post("/updates/trigger")
 # async def trigger_update(background_tasks: BackgroundTasks):
 #     """Manually trigger a data update"""
@@ -398,6 +439,9 @@ async def get_income_statement(
 
         return clean_mongo_data(income_statement[period])
 
+    except HTTPException:
+        # Re-raise HTTPException (like 404) as-is
+        raise
     except Exception as e:
         logger.error(f"Error fetching income statement for {ticker}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -427,6 +471,9 @@ async def get_balance_sheet(
 
         return clean_mongo_data(balance_sheet[period])
 
+    except HTTPException:
+        # Re-raise HTTPException (like 404) as-is
+        raise
     except Exception as e:
         logger.error(f"Error fetching balance sheet for {ticker}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -457,10 +504,12 @@ async def get_cash_flow_statement(
 
         return clean_mongo_data(cash_flow_statement[period])
 
+    except HTTPException:
+        # Re-raise HTTPException (like 404) as-is
+        raise
     except Exception as e:
         logger.error(f"Error fetching cash flow statement for {ticker}: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Internal Server Error")\
-            
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 # Add these endpoints to your existing FastAPI app
 
@@ -664,7 +713,455 @@ async def get_company_peers(
         logger.error(f"Error fetching peers for {ticker}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# News endpoints
+
+@app.get("/companies/{ticker}/news")
+async def get_company_news(
+    ticker: str,
+    limit: int = Query(10, description="Maximum number of news articles to return", ge=1, le=50),
+    include_content: bool = Query(True, description="Include full article content (set to false for faster responses)"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """
+    Get latest news articles for a specific company
     
+    Fetches recent news articles related to the company from Yahoo Finance.
+    By default includes full article content. Set include_content=false for faster responses with metadata only.
+    """
+    try:
+        ticker = ticker.upper()
+        
+        # Verify company exists in database
+        company = await db.companies.find_one(
+            {"ticker": ticker},
+            {"ticker": 1, "_id": 0}
+        )
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+        
+        # Fetch news using news service
+        news_service = get_news_service()
+        news_articles = await news_service.get_news(ticker, limit, include_content)
+        
+        return {
+            "ticker": ticker,
+            "count": len(news_articles),
+            "include_content": include_content,
+            "articles": clean_mongo_data(news_articles)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching news for {ticker}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/news/batch")
+async def get_news_batch(
+    tickers: List[str] = Query(..., description="List of tickers to get news for"),
+    limit: int = Query(10, description="Maximum number of articles per ticker", ge=1, le=50),
+    include_content: bool = Query(True, description="Include full article content (set to false for faster responses)"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """
+    Get news articles for multiple tickers
+    
+    Fetches news articles for multiple companies concurrently.
+    By default includes full article content. Set include_content=false for faster responses with metadata only.
+    """
+    try:
+        tickers = [t.upper() for t in tickers]
+        
+        if len(tickers) > 20:
+            raise HTTPException(status_code=400, detail="Maximum 20 tickers allowed per request")
+        
+        # Fetch news using news service
+        news_service = get_news_service()
+        news_dict = await news_service.get_news_batch(tickers, limit, include_content)
+        
+        # Format response
+        result = {
+            "count": len(tickers),
+            "tickers": tickers,
+            "news": {}
+        }
+        
+        for ticker in tickers:
+            result["news"][ticker] = {
+                "count": len(news_dict.get(ticker, [])),
+                "articles": clean_mongo_data(news_dict.get(ticker, []))
+            }
+        
+        return clean_mongo_data(result)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching batch news: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Comprehensive data endpoint
+
+@app.get("/companies/{ticker}/comprehensive")
+async def get_comprehensive_data(
+    ticker: str,
+    news_limit: int = Query(20, description="Maximum number of news articles", ge=1, le=50),
+    include_news_content: bool = Query(True, description="Include full news article content"),
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """
+    Get comprehensive data for a company including:
+    1. Company Profile Data (name, symbol, exchange, industry, sector, logo, description, CEO, employees, website, marketCap, price, beta)
+    2. Quote (price, change, changesPercentage, dayLow, dayHigh, yearLow, yearHigh, open, previousClose, volume, avgVolume, marketCap, pe, eps, beta, dividendYield, sector)
+    3. Historical Price Data (365+ days with date and close fields)
+    4. News Data (up to 20 articles with headline, summary, url, datetime, source)
+    5. Valuation Data (key metrics TTM, income statements, enterprise values, financial growth)
+    6. Financial Health Data (ratios, income statements, cash flow statements)
+    7. Earnings Data (calendar, history, dates)
+    """
+    try:
+        ticker = ticker.upper()
+        
+        # Verify company exists
+        company = await db.companies.find_one(
+            {"ticker": ticker},
+            {"_id": 0}
+        )
+        if not company:
+            raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
+        
+        # 1. Company Profile Data
+        profile = {
+            "companyName": company.get("companyName") or company.get("name"),
+            "symbol": ticker,
+            "exchange": company.get("exchange"),
+            "industry": company.get("industry"),
+            "sector": company.get("sector"),
+            "image": company.get("image"),
+            "description": company.get("description"),
+            "ceo": company.get("ceo"),
+            "fullTimeEmployees": company.get("fullTimeEmployees"),
+            "website": company.get("website"),
+            "marketCap": company.get("mktCap") or company.get("marketCap") or company.get("quote", {}).get("marketCap"),
+            "price": company.get("price") or company.get("quote", {}).get("price"),
+            "beta": company.get("beta")
+        }
+        
+        # 2. Quote Data
+        quote_data = company.get("quote", {})
+        quote = {
+            "price": quote_data.get("price") or company.get("price"),
+            "change": quote_data.get("change"),
+            "changesPercentage": quote_data.get("changesPercentage"),
+            "dayLow": quote_data.get("dayLow"),
+            "dayHigh": quote_data.get("dayHigh"),
+            "yearLow": quote_data.get("yearLow"),
+            "yearHigh": quote_data.get("yearHigh"),
+            "open": quote_data.get("open"),
+            "previousClose": quote_data.get("previousClose"),
+            "volume": quote_data.get("volume"),
+            "avgVolume": quote_data.get("avgVolume") or company.get("volAvg"),
+            "marketCap": quote_data.get("marketCap") or company.get("mktCap") or company.get("marketCap"),
+            "pe": quote_data.get("pe") or company.get("key_metrics", {}).get("pe_ratio"),
+            "eps": company.get("key_metrics", {}).get("eps"),
+            "beta": company.get("beta"),
+            "dividendYield": company.get("key_metrics", {}).get("dividend_yield") or quote_data.get("dividendYield"),
+            "sector": company.get("sector")
+        }
+        
+        # 3. Historical Price Data (fetch from yfinance - 365+ days)
+        historical_data = []
+        stock = None
+        try:
+            await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+            stock = yf.Ticker(ticker)
+            hist = stock.history(period="1y")
+            if not hist.empty:
+                # Convert to list of dicts with date and close
+                hist_reset = hist.reset_index()
+                historical_data = [
+                    {
+                        "date": row["Date"].strftime("%Y-%m-%d") if hasattr(row["Date"], "strftime") else str(row["Date"]),
+                        "close": float(row["Close"]) if pd.notna(row["Close"]) else None
+                    }
+                    for _, row in hist_reset.iterrows()
+                ]
+        except YFRateLimitError:
+            logger.warning(f"Rate limit hit while fetching historical data for {ticker}")
+            historical_data = []
+        except Exception as e:
+            logger.warning(f"Error fetching historical data for {ticker}: {e}")
+            historical_data = []
+        
+        # 4. News Data
+        news_data = []
+        try:
+            news_service = get_news_service()
+            news_articles = await news_service.get_news(ticker, news_limit, include_news_content)
+            news_data = [
+                {
+                    "headline": article.get("title"),
+                    "summary": article.get("summary"),
+                    "url": article.get("url"),
+                    "datetime": article.get("publish_date"),
+                    "source": article.get("provider"),
+                    "thumbnail_url": article.get("thumbnail_url")
+                }
+                for article in news_articles
+            ]
+        except Exception as e:
+            logger.warning(f"Error fetching news for {ticker}: {e}")
+            news_data = []
+        
+        # 5. Valuation Data
+        key_metrics = company.get("key_metrics", {})
+        financial_statements = company.get("financial_statements", {})
+        valuation = {
+            "key_metrics_ttm": {
+                "pe_ratio": key_metrics.get("pe_ratio"),
+                "forward_pe": key_metrics.get("forward_pe"),
+                "peg_ratio": key_metrics.get("peg_ratio"),
+                "price_to_book": key_metrics.get("price_to_book"),
+                "price_to_sales": key_metrics.get("price_to_sales"),
+                "beta": key_metrics.get("beta"),
+                "dividend_yield": key_metrics.get("dividend_yield"),
+                "dividend_rate": key_metrics.get("dividend_rate")
+            },
+            "income_statements": {
+                "annual": financial_statements.get("income_statement", {}).get("annual", {}),
+                "quarterly": financial_statements.get("income_statement", {}).get("quarterly", {})
+            },
+            "enterprise_values": {
+                "market_cap": company.get("mktCap") or company.get("marketCap"),
+                "enterprise_value": company.get("enterprise_value")
+            },
+            "financial_growth": company.get("ttm_ratios", {})
+        }
+        
+        # 6. Financial Health Data
+        financial_health = {
+            "ratios": {
+                "profit_margin": company.get("ttm_ratios", {}).get("profit_margin"),
+                "operating_margin": company.get("ttm_ratios", {}).get("operating_margin"),
+                "roa": company.get("ttm_ratios", {}).get("roa"),
+                "roe": company.get("ttm_ratios", {}).get("roe"),
+                "revenue_growth": company.get("ttm_ratios", {}).get("revenue_growth"),
+                "earnings_growth": company.get("ttm_ratios", {}).get("earnings_growth")
+            },
+            "income_statements": {
+                "current_annual": financial_statements.get("income_statement", {}).get("annual", {}),
+                "current_quarterly": financial_statements.get("income_statement", {}).get("quarterly", {}),
+                "previous_annual": {},  # Could be enhanced to store historical
+                "previous_quarterly": {}  # Could be enhanced to store historical
+            },
+            "cash_flow_statements": {
+                "annual": financial_statements.get("cash_flow_statement", {}).get("annual", {}),
+                "quarterly": financial_statements.get("cash_flow_statement", {}).get("quarterly", {})
+            }
+        }
+        
+        # 7. Earnings Data (fetch from yfinance)
+        earnings_data = {}
+        try:
+            if stock is None:
+                await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+                stock = yf.Ticker(ticker)
+            
+            info = stock.info
+            
+            # Earnings calendar
+            earnings_calendar = None
+            try:
+                earnings_calendar = stock.calendar
+            except Exception:
+                pass
+            
+            # Earnings history
+            earnings_history = None
+            try:
+                if hasattr(stock, 'earnings_history'):
+                    earnings_history = stock.earnings_history
+            except Exception:
+                pass
+            
+            # Quarterly earnings
+            earnings_quarterly = None
+            try:
+                if hasattr(stock, 'quarterly_earnings') and not stock.quarterly_earnings.empty:
+                    earnings_quarterly = stock.quarterly_earnings
+            except Exception:
+                pass
+            
+            # Annual earnings
+            earnings_annual = None
+            try:
+                if hasattr(stock, 'earnings') and not stock.earnings.empty:
+                    earnings_annual = stock.earnings
+            except Exception:
+                pass
+            
+            earnings_data = {
+                "earnings_calendar": clean_mongo_data(earnings_calendar.to_dict()) if earnings_calendar is not None and hasattr(earnings_calendar, 'to_dict') and not earnings_calendar.empty else {},
+                "earnings_dates": info.get("earningsDates", []) if info else [],
+                "earnings_history": clean_mongo_data(earnings_history.to_dict()) if earnings_history is not None and hasattr(earnings_history, 'to_dict') and not earnings_history.empty else {},
+                "earnings_quarterly": clean_mongo_data(earnings_quarterly.to_dict()) if earnings_quarterly is not None and hasattr(earnings_quarterly, 'to_dict') and not earnings_quarterly.empty else {},
+                "earnings_annual": clean_mongo_data(earnings_annual.to_dict()) if earnings_annual is not None and hasattr(earnings_annual, 'to_dict') and not earnings_annual.empty else {}
+            }
+        except YFRateLimitError:
+            logger.warning(f"Rate limit hit while fetching earnings data for {ticker}")
+            earnings_data = {}
+        except Exception as e:
+            logger.warning(f"Error fetching earnings data for {ticker}: {e}")
+            earnings_data = {}
+        
+        # Combine all data
+        comprehensive_data = {
+            "ticker": ticker,
+            "companyProfile": clean_mongo_data(profile),
+            "quote": clean_mongo_data(quote),
+            "historicalPrices": clean_mongo_data(historical_data),
+            "news": clean_mongo_data(news_data),
+            "valuation": clean_mongo_data(valuation),
+            "financialHealth": clean_mongo_data(financial_health),
+            "earnings": clean_mongo_data(earnings_data),
+            "last_updated": company.get("last_updated")
+        }
+        
+        return comprehensive_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching comprehensive data for {ticker}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
+
+# Real-time price streaming endpoints
+
+@app.websocket("/ws/quote/{ticker}")
+async def websocket_quote(websocket: WebSocket, ticker: str):
+    """
+    WebSocket endpoint for real-time stock price updates.
+    Clients connect to receive live price updates for a specific ticker.
+    """
+    realtime_manager = get_realtime_manager()
+    ticker = ticker.upper()
+    
+    await websocket.accept()
+    logger.info(f"WebSocket connection established for {ticker}")
+    
+    try:
+        # Subscribe to price updates
+        await realtime_manager.subscriptions.subscribe(ticker, websocket)
+        
+        # Send initial price if available
+        cached_price = await realtime_manager.cache.get(ticker)
+        if cached_price:
+            await websocket.send_json({
+                "ticker": ticker,
+                "data": cached_price,
+                "timestamp": cached_price.get("last_updated", datetime.utcnow()).isoformat(),
+                "type": "initial"
+            })
+        else:
+            # Fetch initial price
+            await realtime_manager.get_price(ticker)
+        
+        # Keep connection alive and handle incoming messages
+        while True:
+            try:
+                # Wait for messages (or timeout to keep connection alive)
+                data = await asyncio.wait_for(websocket.receive_text(), timeout=30.0)
+                # Handle ping/pong or other messages if needed
+                if data == "ping":
+                    await websocket.send_text("pong")
+            except asyncio.TimeoutError:
+                # Send ping to keep connection alive
+                await websocket.send_json({"type": "ping"})
+            except WebSocketDisconnect:
+                break
+                
+    except WebSocketDisconnect:
+        logger.info(f"WebSocket disconnected for {ticker}")
+    except Exception as e:
+        logger.error(f"Error in WebSocket connection for {ticker}: {e}", exc_info=True)
+    finally:
+        # Unsubscribe when connection closes
+        await realtime_manager.subscriptions.unsubscribe(ticker, websocket)
+
+
+@app.get("/quote/realtime/{ticker}")
+async def get_realtime_quote(ticker: str):
+    """
+    Get real-time (cached) stock quote.
+    Returns the latest cached price data. Updates cache if stale.
+    """
+    try:
+        realtime_manager = get_realtime_manager()
+        ticker = ticker.upper()
+        
+        # Get price (will fetch if not cached or stale)
+        price_data = await realtime_manager.get_price(ticker)
+        
+        if not price_data:
+            raise HTTPException(status_code=404, detail=f"Price data not available for {ticker}")
+        
+        return clean_mongo_data(price_data)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching real-time quote for {ticker}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/quote/realtime")
+async def get_realtime_quotes(tickers: List[str] = Query(..., description="List of tickers to get quotes for")):
+    """
+    Get real-time quotes for multiple tickers.
+    Returns the latest cached price data for all requested tickers.
+    """
+    try:
+        realtime_manager = get_realtime_manager()
+        tickers = [t.upper() for t in tickers]
+        
+        results = {}
+        for ticker in tickers:
+            price_data = await realtime_manager.get_price(ticker)
+            if price_data:
+                results[ticker] = clean_mongo_data(price_data)
+            else:
+                results[ticker] = None
+        
+        return results
+        
+    except Exception as e:
+        logger.error(f"Error fetching real-time quotes: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/quote/realtime/status")
+async def get_realtime_status():
+    """Get status of the real-time price streaming service"""
+    try:
+        realtime_manager = get_realtime_manager()
+        active_tickers = await realtime_manager.subscriptions.get_active_tickers()
+        all_cached = await realtime_manager.cache.get_all()
+        
+        return {
+            "is_running": realtime_manager._is_running,
+            "active_subscriptions": len(active_tickers),
+            "active_tickers": list(active_tickers),
+            "cached_tickers": len(all_cached),
+            "poll_interval_seconds": realtime_manager._poll_interval
+        }
+    except Exception as e:
+        logger.error(f"Error getting real-time status: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 import os
 import uvicorn
 
