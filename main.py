@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, Query, Depends, BackgroundTasks, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
 from typing import List, Optional
 import logging
 import os
@@ -43,8 +42,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create database indexes for better performance
-    await MongoManager.create_indexes()
     # Start the update loop when the application starts
     await UpdateManager.start_updates()
     # Start the real-time price manager
@@ -55,8 +52,6 @@ async def lifespan(app: FastAPI):
     await realtime_manager.stop()
     # Stop the update loop when the application shuts down
     await UpdateManager.stop_updates()
-    # Shutdown yfinance thread pool executor
-    shutdown_executor()
 
 
 app = FastAPI(
@@ -76,9 +71,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Add GZip compression middleware for faster responses
-app.add_middleware(GZipMiddleware, minimum_size=1000)
  
 
 @app.get("/companies", response_model=List[dict])
@@ -846,11 +838,13 @@ async def get_comprehensive_data(
         
         # Fetch shares outstanding and EPS data from yfinance early (we'll use it in multiple places)
         shares_outstanding = None
+        stock = None
         info = None
         try:
-            info = await get_yfinance_info_async(ticker)
-            if info:
-                shares_outstanding = info.get('sharesOutstanding')
+            await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+            stock = yf.Ticker(ticker)
+            info = stock.info
+            shares_outstanding = info.get('sharesOutstanding')
         except Exception:
             pass
         
@@ -914,8 +908,11 @@ async def get_comprehensive_data(
         # 3. Historical Price Data (fetch from yfinance - 365+ days)
         historical_data = []
         try:
-            hist = await get_yfinance_history_async(ticker, period="1y")
-            if hist is not None and not hist.empty:
+            if stock is None:
+                await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+                stock = yf.Ticker(ticker)
+            hist = stock.history(period="1y")
+            if not hist.empty:
                 # Convert to list of dicts with date and close
                 hist_reset = hist.reset_index()
                 historical_data = [
@@ -1010,17 +1007,42 @@ async def get_comprehensive_data(
         # 7. Earnings Data (fetch from yfinance)
         earnings_data = {}
         try:
-            # Reuse info if we already have it, otherwise fetch
-            if info is None:
-                info = await get_yfinance_info_async(ticker)
+            if stock is None:
+                await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+                stock = yf.Ticker(ticker)
             
-            # Fetch comprehensive stock data (includes earnings if available)
-            stock_data = await get_yfinance_stock_data_async(ticker)
+            info = stock.info
             
-            earnings_calendar = stock_data.get('calendar') if stock_data else None
-            earnings_annual = stock_data.get('earnings') if stock_data else None
-            earnings_quarterly = stock_data.get('quarterly_earnings') if stock_data else None
-            earnings_history = stock_data.get('earnings_history') if stock_data else None
+            # Earnings calendar
+            earnings_calendar = None
+            try:
+                earnings_calendar = stock.calendar
+            except Exception:
+                pass
+            
+            # Earnings history
+            earnings_history = None
+            try:
+                if hasattr(stock, 'earnings_history'):
+                    earnings_history = stock.earnings_history
+            except Exception:
+                pass
+            
+            # Quarterly earnings
+            earnings_quarterly = None
+            try:
+                if hasattr(stock, 'quarterly_earnings') and not stock.quarterly_earnings.empty:
+                    earnings_quarterly = stock.quarterly_earnings
+            except Exception:
+                pass
+            
+            # Annual earnings
+            earnings_annual = None
+            try:
+                if hasattr(stock, 'earnings') and not stock.earnings.empty:
+                    earnings_annual = stock.earnings
+            except Exception:
+                pass
             
             earnings_data = {
                 "earnings_calendar": clean_mongo_data(earnings_calendar.to_dict()) if earnings_calendar is not None and hasattr(earnings_calendar, 'to_dict') and not earnings_calendar.empty else {},
@@ -1215,13 +1237,16 @@ async def get_dividend_data(
             raise HTTPException(status_code=404, detail=f"Company {ticker} not found")
         
         # Fetch dividend data from yfinance
-        info = await get_yfinance_info_async(ticker)
+        await asyncio.sleep(0.2)  # Small delay to avoid rate limits
+        stock = yf.Ticker(ticker)
+        info = stock.info
         
         # Get dividend history
+        dividends_series = None
         dividends_dict = {}
         try:
-            dividends_series = await get_yfinance_dividends_async(ticker)
-            if dividends_series is not None and not dividends_series.empty:
+            dividends_series = stock.dividends
+            if not dividends_series.empty:
                 # Convert pandas Series to dict with date strings as keys
                 dividends_dict = {}
                 for date, value in dividends_series.items():
