@@ -60,6 +60,34 @@ class MongoManager:
             logger.error(f"Error updating company data for {symbol}: {str(e)}")
             return False
     @classmethod
+    async def create_indexes(cls) -> None:
+        """Create database indexes for better query performance"""
+        try:
+            db = await cls.get_database()
+            
+            # Create indexes on frequently queried fields
+            await db.companies.create_index("ticker", unique=True)
+            await db.companies.create_index("sector")
+            await db.companies.create_index("industry")
+            await db.companies.create_index("exchange")
+            
+            # Create text index for search functionality
+            try:
+                await db.companies.create_index([("ticker", "text"), ("companyName", "text"), ("name", "text")])
+            except Exception as e:
+                # Text index might already exist, that's okay
+                logger.debug(f"Text index creation: {e}")
+            
+            # Create compound indexes for common query patterns
+            await db.companies.create_index([("sector", 1), ("market_cap", -1)])
+            await db.companies.create_index([("industry", 1), ("market_cap", -1)])
+            
+            logger.info("Database indexes created successfully")
+        except Exception as e:
+            logger.warning(f"Error creating database indexes: {str(e)}")
+            # Don't fail startup if indexes fail - they might already exist
+    
+    @classmethod
     async def close_connections(cls) -> None:
         """Close database connections"""
         if cls._client is not None:
