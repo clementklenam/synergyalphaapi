@@ -1188,15 +1188,17 @@ async def get_dividend_data(
     """
     Get comprehensive dividend data for a company including:
     1. Dividend Metrics (yield, annual payout, payout ratio, growth streak, EPS, frequency)
-    2. Upcoming Dividend Payouts (ex-dividend date, amount, payment date, record date, declare date)
-    3. Dividend History Table (declareDate, exDivDate, recordDate, payDate, amount, fiscal year/quarter)
+    2. Upcoming Dividend Payouts (ex-dividend date, amount, payment date)
+    3. Dividend History Table (exDivDate, amount, fiscal year/quarter)
     4. Dividend Yield Chart Data (date, yield percentage)
     5. Payout History Chart Data (year, payout amount, growth percentage)
-    6. Quick Stats (frequency, payout type, last/next payment dates)
+    6. Quick Stats (frequency, last/next payment dates, current payout, growth)
     
-    Data Sources:
-    - yfinance: Basic dividend data (yield, rate, history, dates)
-    - SEC EDGAR (Free, No API Key): recordDate, declareDate, payoutType, growth_streak calculation
+    Data Source:
+    - yfinance: All dividend data (free, no API key required)
+    
+    Note: Only fields with actual values are returned (null fields are excluded).
+    Fields like recordDate, declareDate, and payoutType are not available from yfinance.
     """
     try:
         ticker = ticker.upper()
